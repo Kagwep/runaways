@@ -1,10 +1,14 @@
 import { provider } from "../config/constants";
 import { allowedMethods, dappKey, expiry, metaData } from "../helpers/openSessionHelper";
 import { Status } from "../helpers/status";
-import { OffChainSession, SessionParams, createSessionRequest, openSession } from "@argent/x-sessions";
+//import { OffChainSession, SessionParams, createSessionRequest, openSession } from "@argent/x-sessions";
 import { FC, useState } from "react";
 import { Signature } from "starknet";
 import { StarknetWindowObject } from "starknetkit";
+import { OffChainSession } from "./sessionTypes";
+import { SessionParams } from "./sessionTypes";
+import { openSession } from "./utils";
+import { createSessionRequest } from "./utils";
 
 interface SessionKeysSignProps {
   wallet: StarknetWindowObject;

@@ -3,9 +3,13 @@ import { ARGENT_SESSION_SERVICE_BASE_URL, HelloWorld, provider } from "../config
 import { dappKey } from "../helpers/openSessionHelper";
 import { Status } from "../helpers/status";
 import { parseInputAmountToUint256 } from "../helpers/token";
-import { ArgentSessionService, OffChainSession, SessionDappService, buildSessionAccount } from "@argent/x-sessions";
+//import { ArgentSessionService, OffChainSession, SessionDappService, buildSessionAccount } from "@argent/x-sessions";
 import { FC, useState } from "react";
 import { Abi, Calldata, Contract, RawArgs, Signature, shortString, stark } from "starknet";
+import { ArgentSessionService } from "./argentSessionService";
+import { OffChainSession } from "./sessionTypes";
+import { SessionDappService } from "./sessionDappService";
+import { buildSessionAccount } from "./utils";
 
 interface SessionKeysExecuteOutsideProps {
   address: string;

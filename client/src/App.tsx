@@ -30,6 +30,8 @@ const App = () => {
 
   console.log(chainId)
 
+  console.log(accountSessionSignature)
+
  
 
 

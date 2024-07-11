@@ -3,9 +3,12 @@ import { ARGENT_SESSION_SERVICE_BASE_URL, HelloWorld, provider } from "../config
 import { dappKey } from "../helpers/openSessionHelper";
 import { Status } from "../helpers/status";
 import { parseInputAmountToUint256 } from "../helpers/token";
-import { OffChainSession, SignSessionError, buildSessionAccount } from "@argent/x-sessions";
+// import { OffChainSession, SignSessionError, buildSessionAccount } from "@argent/x-sessions";
 import { FC, useState } from "react";
 import { Abi, Contract, Signature, stark } from "starknet";
+import { OffChainSession } from "./sessionTypes";
+import { SignSessionError } from "./errors";
+import { buildSessionAccount } from "./utils";
 
 
 
@@ -48,6 +51,8 @@ const SessionKeysExecute: FC<SessionKeysExecuteProps> = ({
         dappKey,
         argentSessionServiceBaseUrl: ARGENT_SESSION_SERVICE_BASE_URL,
       });
+
+      console.log(sessionAccount)
 
       const contract = new Contract(CONTRACT_ABI as Abi, HelloWorld, sessionAccount as any);
 

@@ -68,6 +68,7 @@ mod RunAwayNFTFactory {
             ).unwrap();
     
             let token_id = *result.at(0);
+
             (contract_address, token_id.try_into().unwrap())
         }
 

@@ -15,12 +15,13 @@ import { SessionKeysExecute } from "./sessions/SessionKeysExecute";
 import { SessionKeysSign } from "./sessions/SessionKeysSign";
 import { SessionKeysExecuteOutside } from "./sessions/SessionKeysExecuteOutside";
 import { SessionKeysTypedDataOutside } from "./sessions/SessionKeysTypedDataOutside";
+import { parseInputAmountToUint256 } from "./helpers/token";
 
 
 const App = () => {
 
   const [balance,setBalance] = useState(0)
-  const { address, connection, connectWallet, contract,disconnectWallet,chainId,account} = useAppContext()
+  const { address, connection, connectWallet, contract,disconnectWallet,chainId,account,erc20_contract,tokens_contract} = useAppContext()
   const [lastTransactionHash, setLastTransactionHash] = useState("");
   const [transactionStatus, setTransactionStatus] = useState<Status>("idle");
   const [transactionError, setTransactionError] = useState("");
@@ -65,6 +66,29 @@ const App = () => {
 
   };
 
+  const depositTokens = async() =>{
+
+
+    const zuri = "0x011ce019f9241b50713713cb4ae43032c5e72eab8af208976daa50d8baab0b83"
+
+    // https://www.starknetjs.com/docs/guides/use_erc20/#interact-with-an-erc20
+    // check .populate
+
+    const amount = "0.0001"
+    const amountToU256 = parseInputAmountToUint256(amount);
+
+    console.log(Number(amountToU256))
+
+      try{
+        await tokens_contract.deposit_fee(zuri,amountToU256);
+        console.log('done');
+      }catch(error){
+        console.log(error);
+      }
+
+ 
+  }
+
   useEffect(() => {
     const fetchBalance = async () => {
       await getBalance();
@@ -87,56 +111,10 @@ const App = () => {
         <button onClick={getBalance} className="text-blue-800"> get balance</button>
         {connection && account && (
         <>
-          <div
-            className={`${lastTransactionHash ? "cursor-pointer hover:underline" : "default"}`}
-            onClick={() => {
-              if (!lastTransactionHash) return;
-              window.open(`https://sepolia.starkscan.co/tx/${lastTransactionHash}`, "_blank");
-            }}
-          >
-            Last tx hash: {lastTransactionHash || "---"}
-          </div>
-          <div>Tx status: {transactionStatus}</div>
-          <div color="##ff4848">{transactionError.toString()}</div>
-
-          <div className="flex flex-col text-black">
-            <SessionKeysSign
-              wallet={connection}
-              setTransactionStatus={setTransactionStatus}
-              setAccountSessionSignature={setAccountSessionSignature}
-              setSessionRequest={setSessionRequest}
-            />
-          </div>
-
-          <div className="flex flex-col text-black">
-            <SessionKeysExecute
-              address={address}
-              accountSessionSignature={accountSessionSignature}
-              sessionRequest={sessionRequest}
-              setTransactionStatus={setTransactionStatus}
-              setLastTransactionHash={setLastTransactionHash}
-              transactionStatus={transactionStatus}
-            />
-          </div>
-
-          <div className="flex text-black justify-between">
-            <div className="flex flex-col text-black ">
-              <SessionKeysExecuteOutside
-                address={address}
-                accountSessionSignature={accountSessionSignature}
-                sessionRequest={sessionRequest}
-                transactionStatus={transactionStatus}
-              />
-            </div>
-            <div className="flex flex-col text-black ">
-              <SessionKeysTypedDataOutside
-                address={address}
-                accountSessionSignature={accountSessionSignature}
-                sessionRequest={sessionRequest}
-                transactionStatus={transactionStatus}
-              />
-            </div>
-          </div>
+        <div className="d-flex">
+           <button onClick={depositTokens} className="text-blue-800"> send tokens to contract </button>
+        </div>
+          
         </>
       )}
         <Routes>

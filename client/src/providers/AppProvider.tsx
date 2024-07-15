@@ -1,15 +1,15 @@
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { Contract,ProviderInterface,RpcProvider,constants } from 'starknet'
 import { connect, ConnectedStarknetWindowObject, disconnect,Connector } from 'starknetkit'
-import { CONTRACT_ABI, CONTRACT_ADDRESS} from '../config/config'
+import { CONTRACT_ABI, CONTRACT_ADDRESS, ERC20CONTRACT_ADDRESS, ERC20_ABI, TOKEN_CONTRACT,CONTRACT_TOKENS_ABI} from '../config/config'
 import { WebWalletConnector } from 'starknetkit/webwallet'
 import { ARGENT_WEBWALLET_URL,provider } from '../config/constants'
-import { StarknetChainId } from "starknet-types";
 
 
 const initialData = {
     contract: null as any,
-    pragma_contract: null as any,
+    erc20_contract: null as any,
+    tokens_contract: null as any,
     account: null as any,
     address: null as any,
     connection: null as any,
@@ -34,7 +34,8 @@ const AppProvider = ({ children }: IAppProvider) => {
     let connectors: Connector[];
 
     const [contract, setContract] = useState<null | any>()
-    const [pragma_contract, setPragmaContract] = useState<null | any>()
+    const [erc20_contract, setERC20Contract] = useState<null | any>()
+    const [tokens_contract, setTokenContract] = useState<null | any>()
     const [account, setAccount] = useState<null | any>();
     const [isSmallScreen, setIsSmallScreen] = useState<boolean | any>(false)
     const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>(null);
@@ -106,17 +107,21 @@ const AppProvider = ({ children }: IAppProvider) => {
             
        
             const contract = new Contract(CONTRACT_ABI, CONTRACT_ADDRESS, provider)
-            //const pragma_contract = new Contract(PRAGMA_ABI, PRAGMA_CONTRACT_ADDRESS, account)
+            const erc20_contract = new Contract(ERC20_ABI, ERC20CONTRACT_ADDRESS, provider)
+            const token_contract = new Contract(CONTRACT_TOKENS_ABI, TOKEN_CONTRACT, provider)
             //setPragmaContract(pragma_contract)
-
+            setERC20Contract(erc20_contract)
             setContract(contract)
+            setTokenContract(token_contract)
  
 
             if (account){
                 const contract = new Contract(CONTRACT_ABI, CONTRACT_ADDRESS, account)
-                //const pragma_contract = new Contract(PRAGMA_ABI, PRAGMA_CONTRACT_ADDRESS, account)
-                //setPragmaContract(pragma_contract)
+                const erc20_contract = new Contract(ERC20_ABI, ERC20CONTRACT_ADDRESS, account)
+                const token_contract = new Contract(CONTRACT_TOKENS_ABI, TOKEN_CONTRACT, account)
+                setERC20Contract(erc20_contract)
                 setContract(contract)
+                setTokenContract(token_contract)
                 console.log(contract)
             }
         
@@ -126,7 +131,8 @@ const AppProvider = ({ children }: IAppProvider) => {
 
     const contextValue = useMemo(() => ({
         contract,
-        pragma_contract,
+        erc20_contract,
+        tokens_contract,
         account,
         address,
         connection,
@@ -134,7 +140,7 @@ const AppProvider = ({ children }: IAppProvider) => {
         connectWallet,
         isSmallScreen,
         disconnectWallet,
-    }), [account, contract, address, pragma_contract,chainId]);
+    }), [account, contract, address, erc20_contract,chainId]);
 
     useEffect(() => {
         const connectToStarknet = async () => {

@@ -17,6 +17,7 @@ mod RunAwayNFTFactory {
     use super::IRunAwayNFTFactory;
     use starknet::syscalls;
 
+
     #[storage]
     struct Storage {
         nft_class_hash: ClassHash,

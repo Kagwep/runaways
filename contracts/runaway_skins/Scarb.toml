@@ -1,14 +1,8 @@
 [package]
-name = "runaway"
+name = "runaway_skins"
 version = "0.1.0"
 edition = "2023_11"
 
 # See more keys and their definitions at https://docs.swmansion.com/scarb/docs/reference/manifest.html
 
 [dependencies]
-starknet = ">=2.6.4"
-pragma_lib = { git = "https://github.com/astraly-labs/pragma-lib" }
-
-
-[[target.starknet-contract]]
-sierra = true

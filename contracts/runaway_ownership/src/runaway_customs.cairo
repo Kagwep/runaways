@@ -21,3 +21,32 @@ pub struct Runaway {
     pub experience: u64,
     pub nr_children: u16,    
 }
+
+
+#[derive(Drop, Serde, Copy, starknet::Store)]
+pub enum SkinType {
+    Kofia,
+    Jacket,
+    Pants,
+}
+
+#[derive(Drop, Serde, Copy, starknet::Store)]
+pub struct Kofia {
+    color: Color,
+    runaway_id: u256,
+    token_id: u256,
+}
+
+#[derive(Drop, Serde, Copy, starknet::Store)]
+pub struct Jacket {
+    color: Color,
+    runaway_id: u256,
+    token_id: u256,
+}
+
+#[derive(Drop, Serde, Copy, starknet::Store)]
+pub struct Pants {
+    color: Color,
+    runaway_id: u256,
+    token_id: u256,
+}

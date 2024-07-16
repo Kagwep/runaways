@@ -1,6 +1,7 @@
 #[starknet::interface]
 trait IRunawayOwnershipContract<TContractState> {
     fn create_runaway_and_tba(ref self: TContractState);
+    fn create_runaway_offspring_and_tba(ref self: TContractState, runaway_id: u256);
 }
 
 #[starknet::contract]
@@ -14,13 +15,13 @@ mod RunawayOwnershipContract {
         };
     use starknet::class_hash::ClassHash;
 
-
     use runaway_ownership::interfaces::IRunawayContract::{IRunawayContractDispatcher,IRunawayContractDispatcherTrait};
     use runaway_ownership::interfaces::IRunAwayNFTFactory::{IRunAwayNFTFactoryDispatcher, IRunAwayNFTFactoryDispatcherTrait};
     use runaway_ownership::interfaces::IFactory::{IFactoryDispatcher, IFactoryDispatcherTrait};
 
-    use runaway_ownership::runaway_customs::{Runaway,Color};
+    use runaway_ownership::runaway_customs::{Runaway,Color,SkinType,Jacket,Kofia,Pants};
 
+    const RUNAWAY_VALID_EXPERIENCE_FOR_OFFSPRING: u64 = 200;
 
     #[storage]
     struct Storage {
@@ -109,6 +110,46 @@ mod RunawayOwnershipContract {
             self.user_runaway.write(recipient, true);
 
         }
+
+        fn create_runaway_offspring_and_tba(ref self: ContractState, runaway_id: u256){
+
+            let recipient = get_caller_address();
+
+            let runaway_dispacher = IRunawayContractDispatcher {
+                contract_address: self.runaway_contract_address.read()
+            };
+
+            let runaway = runaway_dispacher.get_runaway(runaway_id);
+
+            assert(runaway.experience >= RUNAWAY_VALID_EXPERIENCE_FOR_OFFSPRING, 'Experience not Enough');
+
+            let runaway_nft_token_dispacher = IRunAwayNFTFactoryDispatcher{
+                contract_address: self.runaway_factory_contract_adress.read()
+            };
+
+            let new_runaway_token_recipient = self.runaways_tba.read(runaway_id);
+
+            let (deployed_address, token_id) = runaway_nft_token_dispacher.deploy_and_mint(new_runaway_token_recipient);
+
+            let runaway_dispacher = IRunawayContractDispatcher {
+                contract_address: self.runaway_contract_address.read()
+            };
+
+            let (new_runaway_id, runaway) = runaway_dispacher.create_offspring_runaway(recipient, token_id, runaway_id);
+
+            let runaway_token = RunawayToken {
+                nft_contract: deployed_address,
+                token_id: token_id,
+                runaway_id : new_runaway_id
+            };
+
+            self.user_tokens.write((recipient,token_id), runaway_token);
+
+            self.user_runaways.write((recipient, runaway_id),runaway);
+
+        }
+
+
     }
 }
 

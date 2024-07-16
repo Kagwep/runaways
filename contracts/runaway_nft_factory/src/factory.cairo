@@ -12,7 +12,8 @@ trait IRunAwayNFTFactory<TContractState> {
 
 #[starknet::contract]
 mod RunAwayNFTFactory {
-    use starknet::ContractAddress;
+    use core::traits::TryInto;
+use starknet::{ContractAddress,get_block_timestamp};
     use starknet::class_hash::ClassHash;
     use super::IRunAwayNFTFactory;
     use starknet::syscalls;
@@ -49,12 +50,17 @@ mod RunAwayNFTFactory {
     impl RunAwayNFTFactoryImpl of IRunAwayNFTFactory<ContractState> {
         
         fn deploy_and_mint(ref self: ContractState, recipient: ContractAddress) -> (ContractAddress, u256) {
+
             let nft_class_hash = self.nft_class_hash.read();
+
+            let salt = get_block_timestamp();
+
+            let new_salt: felt252 = salt.into();
             
             // Deploy new NFT contract
             let (contract_address,_) = syscalls::deploy_syscall(
                 nft_class_hash,
-                0, // calldata_size
+                new_salt,
                 array![].span(), // calldata
                 false // deploy_from_zero
             ).unwrap();
@@ -69,6 +75,8 @@ mod RunAwayNFTFactory {
             ).unwrap();
     
             let token_id = *result.at(0);
+
+            self.nft_count.write(self.nft_count.read() + 1);
 
             (contract_address, token_id.try_into().unwrap())
         }

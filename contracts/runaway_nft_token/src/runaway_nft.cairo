@@ -9,6 +9,7 @@ trait IRunAwayNFT<TContractState> {
 mod RunAwayNFT {
     use openzeppelin::introspection::src5::SRC5Component;
     use openzeppelin::token::erc721::{ERC721Component, ERC721HooksEmptyImpl};
+    use openzeppelin::access::ownable::OwnableComponent;
     use starknet::ContractAddress;
     use super::IRunAwayNFT;
 

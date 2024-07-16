@@ -1,7 +1,13 @@
+use starknet::ContractAddress;
+
 #[starknet::interface]
 trait IRunawayOwnershipContract<TContractState> {
     fn create_runaway_and_tba(ref self: TContractState);
     fn create_runaway_offspring_and_tba(ref self: TContractState, runaway_id: u256);
+    fn set_runaway_contract_address(ref self: TContractState, runaway_contract_address: ContractAddress);
+    fn set_runaway_factory_contract_adress(ref self: TContractState, runaway_factory_contract_adress: ContractAddress);
+    fn set_runaway_tba_factory_contract_address(ref self: TContractState, runaway_tba_factory_contract_address: ContractAddress);
+    
 }
 
 #[starknet::contract]
@@ -26,6 +32,7 @@ mod RunawayOwnershipContract {
     #[storage]
     struct Storage {
         
+        owner: ContractAddress,
         pub nft_class_hash: ClassHash,
         pub runaway_contract_address: ContractAddress,
         pub runaway_factory_contract_adress: ContractAddress,
@@ -37,7 +44,7 @@ mod RunawayOwnershipContract {
 
     }
 
-    #[derive(Drop, starknet::Event)]
+    #[derive(Drop, starknet::Event, starknet::Store)]
     struct RunawayToken {
         nft_contract: ContractAddress,
         token_id: u256,
@@ -49,14 +56,11 @@ mod RunawayOwnershipContract {
     fn constructor(
         ref self: ContractState,
         nft_class_hash: ClassHash,
-        runaway_contract_address: ContractAddress,
-        runaway_factory_contract_adress: ContractAddress,
-        runaway_tba_factory_contract_address: ContractAddress
+        owner: ContractAddress,
+
     ) {
         self.nft_class_hash.write(nft_class_hash);
-        self.runaway_contract_address.write(runaway_contract_address);
-        self.runaway_factory_contract_adress.write(runaway_factory_contract_adress);
-        self.runaway_tba_factory_contract_address.write(runaway_tba_factory_contract_address);
+        self.owner.write(owner);
     }
 
     #[abi(embed_v0)]
@@ -147,6 +151,29 @@ mod RunawayOwnershipContract {
 
             self.user_runaways.write((recipient, runaway_id),runaway);
 
+        }
+
+
+        fn set_runaway_contract_address(ref self: ContractState, runaway_contract_address: ContractAddress){
+
+            let caller = get_caller_address();
+            assert(caller == self.owner.read(), 'Not Owner');
+
+            self.runaway_contract_address.write(runaway_contract_address);
+        }
+        fn set_runaway_factory_contract_adress(ref self: ContractState, runaway_factory_contract_adress: ContractAddress){
+
+            let caller = get_caller_address();
+            assert(caller == self.owner.read(), 'Not Owner');
+
+            self.runaway_factory_contract_adress.write(runaway_factory_contract_adress);
+        }
+        fn set_runaway_tba_factory_contract_address(ref self: ContractState, runaway_tba_factory_contract_address: ContractAddress){
+
+            let caller = get_caller_address();
+            assert(caller == self.owner.read(), 'Not Owner');
+            
+            self.runaway_tba_factory_contract_address.write(runaway_tba_factory_contract_address);
         }
 
 

@@ -1,5 +1,7 @@
 use starknet::ContractAddress;
 
+use core::array::ArrayTrait;
+
 #[derive(Drop, Serde, Copy, starknet::Store)]
 enum SkinType {
     Kofia,
@@ -43,7 +45,9 @@ pub trait ISkinContract<TContractState> {
         ref self: TContractState,
         skin_type: SkinType,
         token_id: u256,
-        runaway_id: u256) -> bool;
+        runaway_id: u256,
+        creator: ContractAddress
+    ) -> bool;
     fn get_kofia(self: @TContractState, kofia_id: u256) -> Kofia;
     fn get_jacket(self: @TContractState, jacket_id: u256) -> Jacket;
     fn get_pant(self: @TContractState, pant_id: u256) -> Pants;
@@ -54,6 +58,9 @@ pub trait ISkinContract<TContractState> {
     fn mix_colors(ref self :TContractState,color1: Color, color2: Color) -> Color;
     fn skin_type_to_u8(ref self :TContractState, skin_type: SkinType) -> u8;
     fn update_skin( ref self:TContractState,skin_id: u256, skin_type: SkinType, runaway_id: u256, caller_ownership: ContractAddress) ->  bool;
+    fn get_runaway_kofias(self: @TContractState, runaway_id: u256,owner: ContractAddress) -> Array<Kofia>;
+    fn get_runaway_jackets(self: @TContractState, runaway_id: u256,owner: ContractAddress) -> Array<Jacket>;
+    fn get_runaway_pants(self: @TContractState, runaway_id: u256,owner: ContractAddress) -> Array<Pants>;
 }
 
 
@@ -76,11 +83,16 @@ pub mod SkinContract {
         pub kofias: LegacyMap::<u256, Kofia>,
         pub jackets: LegacyMap::<u256, Jacket>,
         pub pants: LegacyMap::<u256, Pants>,
-        pub next_skin_id: u256,
+        pub next_kofia_skin_id: u256,
+        pub next_pant_skin_id: u256,
+        pub next_jacket_skin_id: u256,
         pub last_request: u64,
         pub last_request_id: u64,
         pub user_skin: LegacyMap<ContractAddress, bool>,
-        pub user_skins: LegacyMap<(ContractAddress, u256), Skin>,
+        pub runaway_kofia_skins: LegacyMap<(ContractAddress, u256), Kofia>,
+        pub runaway_jacket_skins: LegacyMap<(ContractAddress, u256), Jacket>,
+        pub runaway_pants_skins: LegacyMap<(ContractAddress, u256), Pants>,
+
 
     }
 
@@ -93,7 +105,9 @@ pub mod SkinContract {
 
     #[constructor]
     fn constructor(ref self: ContractState) {
-        self.next_skin_id.write(1);
+        self.next_kofia_skin_id.write(1);
+        self.next_pant_skin_id.write(1);
+        self.next_jacket_skin_id.write(1);
     }
     
     
@@ -105,7 +119,9 @@ pub mod SkinContract {
             ref self: ContractState,
             skin_type: SkinType,
             token_id: u256,
-            runaway_id: u256)  -> bool{
+            runaway_id: u256,
+            creator: ContractAddress
+        )  -> bool{
 
             let request_time = get_block_timestamp();
             let request_time_difference = request_time - self.last_request.read();
@@ -121,21 +137,25 @@ pub mod SkinContract {
             match skin_type {
                 SkinType::Kofia => {
                     let kofia = Kofia { color, runaway_id, token_id };
-                    let kofia_id = self.next_skin_id.read();
+                    let kofia_id = self.next_kofia_skin_id.read();
                     self.kofias.write(kofia_id, kofia);
-                    self.next_skin_id.write(kofia_id + 1);
+                    self.next_kofia_skin_id.write(kofia_id + 1);
+                    self.runaway_kofia_skins.write((creator, kofia_id), kofia);
                 },
                 SkinType::Jacket => {
                     let jacket = Jacket { color, runaway_id, token_id };
-                    let jacket_id = self.next_skin_id.read();
+                    let jacket_id = self.next_jacket_skin_id.read();
                     self.jackets.write(jacket_id, jacket);
-                    self.next_skin_id.write(jacket_id + 1);
+                    self.next_jacket_skin_id.write(jacket_id + 1);
+                    self.runaway_jacket_skins.write((creator, jacket_id), jacket);
+
                 },
                 SkinType::Pants => {
                     let pants = Pants { color, runaway_id, token_id };
-                    let pant_id = self.next_skin_id.read();
+                    let pant_id = self.next_pant_skin_id.read();
                     self.pants.write(pant_id, pants);
-                    self.next_skin_id.write(pant_id + 1);
+                    self.next_pant_skin_id.write(pant_id + 1);
+                    self.runaway_pants_skins.write((creator, pant_id), pants);
                 },
             } 
 
@@ -232,6 +252,88 @@ pub mod SkinContract {
             }
         }
 
+        fn get_runaway_kofias(self: @ContractState, runaway_id: u256, owner: ContractAddress) -> Array<Kofia>{
+
+            let mut kofias = ArrayTrait::<Kofia>::new();
+
+            let total_kofias = self.next_kofia_skin_id.read() - 1;
+
+            let mut count = 1;
+
+            if total_kofias > 0 {
+                loop {
+
+                    if (count > total_kofias){
+                        break;
+                    }
+
+                    let kofia  = self.runaway_kofia_skins.read((owner, count));
+
+                    if kofia.token_id > 0 && (kofia.runaway_id == runaway_id) {
+                        kofias.append(kofia);
+                    }
+
+                    count += 1;
+                }
+            }
+
+            kofias  
+        }
+        fn get_runaway_jackets(self: @ContractState, runaway_id: u256, owner: ContractAddress) -> Array<Jacket>{
+
+            let mut jackets = ArrayTrait::<Jacket>::new();
+
+            let total_jackets = self.next_jacket_skin_id.read() - 1;
+
+            let mut count = 1;
+
+            if total_jackets > 0 {
+                loop {
+
+                    if (count > total_jackets){
+                        break;
+                    }
+
+                    let jacket  = self.runaway_jacket_skins.read((owner, count));
+
+                    if jacket.token_id > 0 && (jacket.runaway_id == runaway_id) {
+                        jackets.append(jacket);
+                    }
+
+                    count += 1;
+                }
+            }
+
+            jackets
+        }
+
+        fn get_runaway_pants(self: @ContractState, runaway_id: u256, owner: ContractAddress) -> Array<Pants>{
+
+            let mut pants = ArrayTrait::<Pants>::new();
+
+            let total_pants = self.next_pant_skin_id.read() - 1;
+
+            let mut count = 1;
+
+            if total_pants > 0 {
+                loop {
+
+                    if (count > total_pants){
+                        break;
+                    }
+
+                    let pant  = self.runaway_pants_skins.read((owner, count));
+
+                    if pant.token_id > 0 && (pant.runaway_id == runaway_id) {
+                        pants.append(pant);
+                    }
+
+                    count += 1;
+                }
+            }
+
+            pants
+        }
 
     }
 

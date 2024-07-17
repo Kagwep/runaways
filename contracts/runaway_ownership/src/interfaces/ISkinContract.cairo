@@ -17,5 +17,5 @@ pub trait ISkinContract<TContractState> {
     ) -> Color;
     fn mix_colors(ref self :TContractState,color1: Color, color2: Color) -> Color;
     fn skin_type_to_u8(ref self :TContractState, skin_type: SkinType) -> u8;
-    fn update_Skin( ref self:TContractState,skin_id: u256, skin_type: SkinType, runaway_id: u256, caller_ownership: ContractAddress) ->  bool;
+    fn update_skin( ref self:TContractState,skin_id: u256, skin_type: SkinType, runaway_id: u256, caller_ownership: ContractAddress) ->  bool;
 }

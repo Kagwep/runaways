@@ -15,9 +15,9 @@ pub struct RunawayGenes {
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
 pub struct Runaway {
+    pub runaway_token_id: u256,
     pub genes: RunawayGenes,
     pub created_at: u64,   
-    pub weight: u64, 
     pub experience: u64,
     pub nr_children: u16,    
 }

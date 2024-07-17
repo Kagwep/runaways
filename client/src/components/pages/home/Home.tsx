@@ -7,8 +7,9 @@ import Agents from "./Agents";
 import Maps from "./MapsSection";
 
 const Home = () => (
-  <>
-    <div className={`${styles.flexStart}`}>
+  <> 
+
+  <div className={`${styles.flexStart}`}>
       <div className={`${styles.boxWidth}`}>
         <Hero />
         <LastEpisode />
@@ -17,6 +18,8 @@ const Home = () => (
     <Overview />
 
     <Maps />
+
+
   </>
 );
 

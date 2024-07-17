@@ -11,11 +11,9 @@ import { useAppContext } from "./providers/AppProvider";
 import { Status } from "./helpers/status";
 import { constants, Signature } from "starknet";
 import { OffChainSession } from "@argent/x-sessions";
-import { SessionKeysExecute } from "./sessions/SessionKeysExecute";
-import { SessionKeysSign } from "./sessions/SessionKeysSign";
-import { SessionKeysExecuteOutside } from "./sessions/SessionKeysExecuteOutside";
-import { SessionKeysTypedDataOutside } from "./sessions/SessionKeysTypedDataOutside";
 import { parseInputAmountToUint256 } from "./helpers/token";
+import MarketplacePage from './components/pages/MarketplacePage';
+import { RunAwaysManage } from "./components/pages/RunAwaysManage";
 
 
 const App = () => {
@@ -105,7 +103,7 @@ const App = () => {
       <div className="w-full overflow-hidden">
 
         <Navbar />
-        <div>Chain: {chainId === constants.StarknetChainId.SN_SEPOLIA ? "SN_SEPOLIA" : "SN_MAIN"}</div>
+        {/* <div>Chain: {chainId === constants.StarknetChainId.SN_SEPOLIA ? "SN_SEPOLIA" : "SN_MAIN"}</div>
         <button onClick={addBalance} className="text-blue-800"> Increase balance</button>
         <p>{balance.toString()}</p>
         <button onClick={getBalance} className="text-blue-800"> get balance</button>
@@ -115,8 +113,8 @@ const App = () => {
            <button onClick={depositTokens} className="text-blue-800"> send tokens to contract </button>
         </div>
           
-        </>
-      )}
+        </> */}
+     
         <Routes>
           <Route path="/" element={<Home />} />
           <Route  path="/agents" element={<Agents />} />
@@ -126,6 +124,9 @@ const App = () => {
             path="/agent/:agentName"
             element={<Agent/>}
           />
+          <Route path="/marketplace" element={<MarketplacePage />} />
+          <Route path="/runaways" element={<RunAwaysManage />} />
+
         </Routes>
         <CTA />
         <Footer />

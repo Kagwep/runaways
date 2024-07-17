@@ -1,4 +1,5 @@
 use starknet::ContractAddress;
+use core::array::ArrayTrait;
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
 pub struct Color {
@@ -36,13 +37,15 @@ pub trait IRunawayContract<TContractState> {
         ref self: TContractState
     ) -> (Color, Color, Color, Color);
     fn mix_colors(ref self :TContractState,color1: Color, color2: Color) -> Color;
+    fn get_user_runaways(self :@TContractState) -> Array<Runaway>;
 }
 
 
 #[starknet::contract]
 pub mod RunawayContract {
 
-    use starknet::{
+    use core::array::ArrayTrait;
+use starknet::{
         ContractAddress, contract_address_const, get_block_number, get_caller_address,
         get_contract_address, get_block_timestamp
     };
@@ -110,6 +113,8 @@ pub mod RunawayContract {
             self.user_runaway.write(caller, true);
 
             self.next_runaway_id.write(runaway_id + 1);
+
+            self.user_runaways.write((caller, runaway_id),new_runaway);
 
             (runaway_id,new_runaway)
 
@@ -226,6 +231,37 @@ pub mod RunawayContract {
             let b: u8 = ((b1 + b2) / 2).try_into().unwrap();
         
             Color { r, g, b }
+        }
+
+        fn get_user_runaways(self :@ContractState) -> Array<Runaway>{
+
+            let caller = get_caller_address();
+
+            let mut runaways = ArrayTrait::<Runaway>::new();
+
+            let total_runaways = self.next_runaway_id.read() - 1;
+
+            let mut count = 1;
+
+            if total_runaways > 0 {
+                loop {
+
+                    if (count > total_runaways){
+                        break;
+                    }
+
+                    let runaway  = self.user_runaways.read((caller, count));
+
+                    if runaway.runaway_token_id > 0 {
+                        runaways.append(runaway);
+                    }
+
+                    count += 1;
+                }
+            }
+
+            runaways
+
         }
 
 

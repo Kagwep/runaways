@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "../../../style";
 import { valoranttext } from "../../../assets/index";
+import { Link } from "react-router-dom";
 
 const Hero = () => (
   <section
@@ -22,12 +23,14 @@ const Hero = () => (
           />
         </div>
       </div>
+      <Link to={"/runaways"}>
       <button className="btn">
         <span className="btn__inner">
           <span className="btn__slide"></span>
           <span className="btn__content">PLAY NOW</span>
         </span>
       </button>
+      </Link>
     </div>
     <video
       autoPlay

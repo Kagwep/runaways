@@ -2,6 +2,7 @@ use starknet::ContractAddress;
 
 #[starknet::interface]
 trait IRunawayOwnershipContract<TContractState> {
+
     fn create_runaway_and_tba(ref self: TContractState);
     fn create_runaway_offspring_and_tba(ref self: TContractState, runaway_id: u256);
     fn set_runaway_contract_address(ref self: TContractState, runaway_contract_address: ContractAddress);
@@ -13,10 +14,10 @@ trait IRunawayOwnershipContract<TContractState> {
     fn create_runaway_jacket_skin(ref self:TContractState, runaway_id: u256);
     fn create_runaway_pants_skin(ref self:TContractState, runaway_id: u256);
     fn add_runaway_token_to_runaway_marketplace(ref self:TContractState, runaway_id: u256, price: felt252);
-    fn add_kofia_skin_token_to_runaway_marketplace(ref self:TContractState, kofia_id: u256, price: felt252);
-    fn add_jacket_skin_token_to_runaway_marketplace(ref self:TContractState, jacket_id: u256, price: felt252);
-    fn add_pants_skin_token_to_runaway_marketplace(ref self:TContractState, pants_id: u256, price: felt252);
-
+    fn add_kofia_skin_token_to_runaway_marketplace(ref self:TContractState,runaway_id: u256, kofia_id: u256, price: felt252);
+    fn add_jacket_skin_token_to_runaway_marketplace(ref self:TContractState,runaway_id: u256, jacket_id: u256, price: felt252);
+    fn add_pants_skin_token_to_runaway_marketplace(ref self:TContractState,runaway_id: u256, pants_id: u256, price: felt252);
+    
 }
 
 #[starknet::contract]
@@ -30,11 +31,14 @@ mod RunawayOwnershipContract {
         };
     use starknet::class_hash::ClassHash;
 
+   
+
     use runaway_ownership::interfaces::IRunawayContract::{IRunawayContractDispatcher,IRunawayContractDispatcherTrait};
     use runaway_ownership::interfaces::IRunAwayNFTFactory::{IRunAwayNFTFactoryDispatcher, IRunAwayNFTFactoryDispatcherTrait};
     use runaway_ownership::interfaces::IFactory::{IFactoryDispatcher, IFactoryDispatcherTrait};
     use runaway_ownership::interfaces::IERC721::{IERC721Dispatcher, IERC721DispatcherTrait};
     use runaway_ownership::interfaces::ISkinContract::{ISkinContractDispatcher, ISkinContractDispatcherTrait};
+    use runaway_ownership::interfaces::IRunawayMarketplaceContract::{IRunawayMarketplaceContractDispatcher, IRunawayMarketplaceContractDispatcherTrait};
 
     use runaway_ownership::runaway_customs::{Runaway,Color,SkinType,Jacket,Kofia,Pants};
 
@@ -110,6 +114,13 @@ mod RunawayOwnershipContract {
         }
 
         fn check_runaway_owner(ref self: ContractState,recipient:ContractAddress, runaway_id: u256){
+
+            let runaway = self.user_runaways.read((recipient,runaway_id));
+
+            assert(runaway.created_at > 0, 'CALLER IS NOT OWNER');
+        }
+
+        fn check_skin_owner(ref self: ContractState,recipient:ContractAddress, runaway_id: u256){
 
             let runaway = self.user_runaways.read((recipient,runaway_id));
 
@@ -313,20 +324,86 @@ mod RunawayOwnershipContract {
             
             self.check_runaway_owner(recipient: caller, runaway_id: runaway_id);
 
+            let runaway = self.user_runaways.read((caller,runaway_id));
+
+            let nft_token = self.user_tokens.read((caller, runaway.runaway_token_id));
+
+            let marketplace_dispacher = IRunawayMarketplaceContractDispatcher {
+                contract_address: self.runaway_marketplace_address.read()
+            };
+
+            marketplace_dispacher.add_runaway_token_to_marketplace(runaway_id,price,nft_token.nft_contract);
+
+
+        }
+
+        fn add_kofia_skin_token_to_runaway_marketplace(ref self:ContractState,runaway_id: u256, kofia_id: u256, price: felt252){
+
+            let caller = get_caller_address();
             
+            self.check_runaway_owner(recipient: caller, runaway_id: runaway_id);
 
+            let kofia_dispacher = ISkinContractDispatcher {
+                contract_address: self.runaway_skin_contract_address.read()
+            };
+
+            let kofia = kofia_dispacher.get_kofia(kofia_id);
+
+            assert(kofia.runaway_id == runaway_id, 'Not Runaway');
+
+            let nft_token = self.user_skin_tokens.read((caller, kofia.token_id));
+
+            let marketplace_dispacher = IRunawayMarketplaceContractDispatcher {
+                contract_address: self.runaway_marketplace_address.read()
+            };
+
+            marketplace_dispacher.add_kofia_skin_token_to_marketplace(kofia_id,price,nft_token.nft_contract);
 
         }
 
-        fn add_kofia_skin_token_to_runaway_marketplace(ref self:ContractState, kofia_id: u256, price: felt252){
+        fn add_jacket_skin_token_to_runaway_marketplace(ref self:ContractState,runaway_id: u256, jacket_id: u256, price: felt252){
 
+            let caller = get_caller_address();
+            
+            self.check_runaway_owner(recipient: caller, runaway_id: runaway_id);
+
+            let jacket_dispacher = ISkinContractDispatcher {
+                contract_address: self.runaway_skin_contract_address.read()
+            };
+
+            let jacket = jacket_dispacher.get_jacket(jacket_id);
+
+            assert(jacket.runaway_id == runaway_id, 'Not Runaway');
+
+            let nft_token = self.user_skin_tokens.read((caller, jacket.token_id));
+
+            let marketplace_dispacher = IRunawayMarketplaceContractDispatcher {
+                contract_address: self.runaway_marketplace_address.read()
+            };
+
+            marketplace_dispacher.add_jacket_skin_token_to_marketplace(jacket_id,price,nft_token.nft_contract);
         }
 
-        fn add_jacket_skin_token_to_runaway_marketplace(ref self:ContractState, jacket_id: u256, price: felt252){
+        fn add_pants_skin_token_to_runaway_marketplace(ref self:ContractState,runaway_id: u256, pants_id: u256, price: felt252){
+            let caller = get_caller_address();
+            
+            self.check_runaway_owner(recipient: caller, runaway_id: runaway_id);
 
-        }
+            let pants_dispacher = ISkinContractDispatcher {
+                contract_address: self.runaway_skin_contract_address.read()
+            };
 
-        fn add_pants_skin_token_to_runaway_marketplace(ref self:ContractState, pants_id: u256, price: felt252){
+            let pants = pants_dispacher.get_pant(pants_id);
+
+            assert(pants.runaway_id == runaway_id, 'Not Runaway');
+
+            let nft_token = self.user_skin_tokens.read((caller, pants.token_id));
+
+            let marketplace_dispacher = IRunawayMarketplaceContractDispatcher {
+                contract_address: self.runaway_marketplace_address.read()
+            };
+
+            marketplace_dispacher.add_jacket_skin_token_to_marketplace(pants_id,price,nft_token.nft_contract);
 
         }
     }

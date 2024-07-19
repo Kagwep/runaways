@@ -96,8 +96,6 @@ const App = () => {
   }, [contract]);
 
    console.log(balance)
-
-  
   return (
     <BrowserRouter>
       <div className="w-full overflow-hidden">
@@ -114,7 +112,9 @@ const App = () => {
         </div>
           
         </> */}
-     
+
+    
+
         <Routes>
           <Route path="/" element={<Home />} />
           <Route  path="/agents" element={<Agents />} />

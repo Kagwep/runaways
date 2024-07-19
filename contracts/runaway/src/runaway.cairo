@@ -38,6 +38,7 @@ pub trait IRunawayContract<TContractState> {
     ) -> (Color, Color, Color, Color);
     fn mix_colors(ref self :TContractState,color1: Color, color2: Color) -> Color;
     fn get_user_runaways(self :@TContractState) -> Array<Runaway>;
+    fn set_runaway_ownership_contract(ref self: TContractState, runaway_ownership_contract: ContractAddress);
 }
 
 
@@ -58,12 +59,14 @@ use starknet::{
 
     #[storage]
     pub struct Storage {
+        pub owner: ContractAddress,
         pub runaways: LegacyMap<u256, Runaway>,
         pub next_runaway_id: u256,
         pub last_request: u64,
         pub last_request_id: u64,
         pub user_runaway: LegacyMap<ContractAddress, bool>,
         pub user_runaways: LegacyMap<(ContractAddress, u256), Runaway>,
+        pub runaway_ownership_contract: ContractAddress,
 
     }
 
@@ -74,8 +77,9 @@ use starknet::{
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState) {
+    fn constructor(ref self: ContractState, owner:ContractAddress) {
         self.next_runaway_id.write(1);
+        self.owner.write(owner);
     }
     
     
@@ -84,6 +88,10 @@ use starknet::{
 
 
         fn create_runaway( ref self:ContractState,caller: ContractAddress,runaway_token_id:u256) -> (u256, Runaway){
+
+            let contract_caller = get_caller_address();
+
+            assert( contract_caller == self.runaway_ownership_contract.read(), 'Not Runaway Ownership Contract');
 
             let request_time = get_block_timestamp();
             let request_time_difference = request_time - self.last_request.read();
@@ -122,6 +130,10 @@ use starknet::{
         }
 
         fn create_offspring_runaway( ref self:ContractState,caller: ContractAddress, runaway_token_id:u256, runaway_id: u256) -> (u256, Runaway){
+
+            let contract_caller = get_caller_address();
+
+            assert( contract_caller == self.runaway_ownership_contract.read(), 'Not Runaway Ownership Contract');
 
             let request_time = get_block_timestamp();
             let request_time_difference = request_time - self.last_request.read();
@@ -173,6 +185,10 @@ use starknet::{
 
         fn update_runaway( ref self:ContractState,runaway_id: u256, experience:u64) ->  Runaway{
 
+            let contract_caller = get_caller_address();
+
+            assert( contract_caller == self.runaway_ownership_contract.read(), 'Not Runaway Ownership Contract');
+
             let mut runaway = self.runaways.read(runaway_id);
 
             runaway.experience += experience;
@@ -182,7 +198,6 @@ use starknet::{
             runaway
 
         }
-
 
         fn get_runaway(self: @ContractState, runaway_id: u256) -> Runaway{
             self.runaways.read(runaway_id)
@@ -252,7 +267,7 @@ use starknet::{
 
                     let runaway  = self.user_runaways.read((caller, count));
 
-                    if runaway.runaway_token_id > 0 {
+                    if runaway.runaway_token_id != 0 {
                         runaways.append(runaway);
                     }
 
@@ -261,6 +276,16 @@ use starknet::{
             }
 
             runaways
+
+        }
+
+        fn set_runaway_ownership_contract(ref self: ContractState, runaway_ownership_contract: ContractAddress){
+
+            let caller = get_caller_address();
+
+            assert(caller == self.owner.read(), 'Not Owner' );
+
+            self.runaway_ownership_contract.write(runaway_ownership_contract);
 
         }
 

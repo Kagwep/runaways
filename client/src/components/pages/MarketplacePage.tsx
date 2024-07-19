@@ -6,7 +6,7 @@ import Banners from '../Banners/Banners';
 const MarketplacePage = () => {
   return (
     <div>
-  
+       
         <Banners />
   
 

@@ -1,15 +1,35 @@
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { Contract,ProviderInterface,RpcProvider,constants } from 'starknet'
 import { connect, ConnectedStarknetWindowObject, disconnect,Connector } from 'starknetkit'
-import { CONTRACT_ABI, CONTRACT_ADDRESS, ERC20CONTRACT_ADDRESS, ERC20_ABI, TOKEN_CONTRACT,CONTRACT_TOKENS_ABI} from '../config/config'
+import { 
+    CONTRACT_ABI,
+    CONTRACT_ADDRESS, 
+    ERC20CONTRACT_ADDRESS, 
+    ERC20_ABI, 
+    TOKEN_CONTRACT,
+    CONTRACT_TOKENS_ABI, 
+    runawayAbi, 
+    runawayContractAddress, 
+    runawayOwnershipABI,
+    runawayOwnershipContractAddress
+
+} from '../config/config'
 import { WebWalletConnector } from 'starknetkit/webwallet'
 import { ARGENT_WEBWALLET_URL,provider } from '../config/constants'
+
+import {
+    TokenboundConnector, 
+    TokenBoundModal, 
+    useTokenBoundModal
+  } from "tokenbound-connector"
 
 
 const initialData = {
     contract: null as any,
     erc20_contract: null as any,
     tokens_contract: null as any,
+    runaways_contract: null as any,
+    runaway_ownership_contract: null as any,
     account: null as any,
     address: null as any,
     connection: null as any,
@@ -17,6 +37,12 @@ const initialData = {
     connectWallet:null as any,
     isSmallScreen: false,
     disconnectWallet:null as any,
+    connectTokenbound: null as any,
+    disconnectTokenbound: null as any,
+    tokenBoundConnection: null as any,
+    tokenBoundAccount: null as any,
+    tokenBoundAddress: null as any,
+
 }
 
 export const AppContext = createContext(initialData)
@@ -36,13 +62,30 @@ const AppProvider = ({ children }: IAppProvider) => {
     const [contract, setContract] = useState<null | any>()
     const [erc20_contract, setERC20Contract] = useState<null | any>()
     const [tokens_contract, setTokenContract] = useState<null | any>()
+    const [runaways_contract, setRunawaysContract] = useState<null | any>()
     const [account, setAccount] = useState<null | any>();
     const [isSmallScreen, setIsSmallScreen] = useState<boolean | any>(false)
     const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>(null);
     const [address, setAddress] = useState<string | null>(null);
     const [chainId, setChainId] = useState<string | null>(null);
-    
+    const [runaway_ownership_contract, setRunawayOwnershipContract] = useState<null | any>()
+    const [tokenBoundConnection, setTokenBoundConnection] = useState<ConnectedStarknetWindowObject | null>(null);
+    const [tokenBoundAccount, setTokenBoundAccount] = useState<null | any>(null);
+    const [tokenBoundAddress, setTokenBoundAddress] = useState<null | any>(null);
 
+    const {
+        isOpen,
+        openModal,
+        closeModal,
+        value,
+        selectedOption,
+        handleChange,
+        handleChangeInput,
+        resetInputValues,
+    } = useTokenBoundModal();
+
+
+    
     async function switchNetwork(connection: any) {
         if (connection && connection.chainId !== "SN_SEPOLIA") {
             try {
@@ -91,6 +134,27 @@ const AppProvider = ({ children }: IAppProvider) => {
         console.log(wallet?.chainId)
         
        }
+
+       const connectTokenbound = async (tokenbound: { connect: () => any }) => {
+           console.log("called tba connect: ", value)
+            const connection = await tokenbound.connect();
+            closeModal();
+            resetInputValues();
+        
+            if (connection && connection.isConnected) {
+            setTokenBoundConnection(connection);
+            setTokenBoundAccount(connection.account);
+            setTokenBoundAddress(connection.selectedAddress);
+            console.log("connection ....", connection)
+            }
+       }
+
+       const disconnectTokenbound = async (tokenbound: { disconnect: () => any }) => {
+         await tokenbound.disconnect();
+         setTokenBoundConnection(null);
+         setTokenBoundAccount(null);
+         setTokenBoundAddress('');
+       }
     
        const disconnectWallet = async () => {
      
@@ -109,19 +173,27 @@ const AppProvider = ({ children }: IAppProvider) => {
             const contract = new Contract(CONTRACT_ABI, CONTRACT_ADDRESS, provider)
             const erc20_contract = new Contract(ERC20_ABI, ERC20CONTRACT_ADDRESS, provider)
             const token_contract = new Contract(CONTRACT_TOKENS_ABI, TOKEN_CONTRACT, provider)
+            const runaways_contract = new Contract(runawayAbi,runawayContractAddress,provider)
+            const runaway_ownership_contract = new Contract(runawayOwnershipABI,runawayOwnershipContractAddress,provider)
             //setPragmaContract(pragma_contract)
             setERC20Contract(erc20_contract)
             setContract(contract)
             setTokenContract(token_contract)
+            setRunawaysContract(runaways_contract)
+            setRunawayOwnershipContract(runaway_ownership_contract)
  
 
             if (account){
                 const contract = new Contract(CONTRACT_ABI, CONTRACT_ADDRESS, account)
                 const erc20_contract = new Contract(ERC20_ABI, ERC20CONTRACT_ADDRESS, account)
                 const token_contract = new Contract(CONTRACT_TOKENS_ABI, TOKEN_CONTRACT, account)
+                const runaways_contract = new Contract(runawayAbi,runawayContractAddress,account)
+                const runaway_ownership_contract = new Contract(runawayOwnershipABI,runawayOwnershipContractAddress,account)
                 setERC20Contract(erc20_contract)
                 setContract(contract)
                 setTokenContract(token_contract)
+                setRunawaysContract(runaways_contract)
+                setRunawayOwnershipContract(runaway_ownership_contract)
                 console.log(contract)
             }
         
@@ -133,6 +205,8 @@ const AppProvider = ({ children }: IAppProvider) => {
         contract,
         erc20_contract,
         tokens_contract,
+        runaways_contract,
+        runaway_ownership_contract,
         account,
         address,
         connection,
@@ -140,7 +214,12 @@ const AppProvider = ({ children }: IAppProvider) => {
         connectWallet,
         isSmallScreen,
         disconnectWallet,
-    }), [account, contract, address, erc20_contract,chainId]);
+        connectTokenbound,
+        disconnectTokenbound,
+        tokenBoundConnection,
+        tokenBoundAccount,
+        tokenBoundAddress,
+    }), [account, contract, address, erc20_contract,chainId, tokenBoundAccount]);
 
     useEffect(() => {
         const connectToStarknet = async () => {

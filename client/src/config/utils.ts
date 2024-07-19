@@ -1,5 +1,7 @@
 import { shortString } from "starknet"
 import { BigNumber } from "bignumber.js"
+import { num, stark } from 'starknet';
+
 
 
 export function isDarkMode(colorscheme: any): boolean {
@@ -78,4 +80,21 @@ export function formatNumberInternational(number: number) {
         // You can implement a custom fallback logic here if needed
         return number.toLocaleString('en-US');
     }
+}
+
+export function convertToStarknetAddress(bigIntAddress: bigint) {
+    // Ensure the input is a BigInt
+    const addressBigInt = BigInt(bigIntAddress);
+
+    // Convert to hex string and remove '0x' prefix if present
+    let hexAddress = num.toHex(addressBigInt);
+    
+    // Remove '0x' prefix if present
+    hexAddress = hexAddress.startsWith('0x') ? hexAddress.slice(2) : hexAddress;
+
+    // Pad to 64 characters
+    hexAddress = hexAddress.padStart(64, '0');
+
+    // Add '0x' prefix
+    return '0x' + hexAddress;
 }

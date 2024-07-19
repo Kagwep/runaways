@@ -1,0 +1,286 @@
+[
+    {
+      "name": "RunawayOwnershipContract",
+      "type": "impl",
+      "interface_name": "runaway_ownership::runaway_ownership::IRunawayOwnershipContract"
+    },
+    {
+      "name": "core::integer::u256",
+      "type": "struct",
+      "members": [
+        {
+          "name": "low",
+          "type": "core::integer::u128"
+        },
+        {
+          "name": "high",
+          "type": "core::integer::u128"
+        }
+      ]
+    },
+    {
+      "name": "runaway_ownership::runaway_ownership::IRunawayOwnershipContract",
+      "type": "interface",
+      "items": [
+        {
+          "name": "create_runaway_and_tba",
+          "type": "function",
+          "inputs": [],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "create_runaway_offspring_and_tba",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "set_runaway_contract_address",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_contract_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "set_runaway_factory_contract_adress",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_factory_contract_adress",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "set_runaway_tba_factory_contract_address",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_tba_factory_contract_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "set_runaway_skin_contract_address",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_skin_contract_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "set_runaway_marketplace_address",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_marketplace_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "create_runaway_kofia_skin",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "create_runaway_jacket_skin",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "create_runaway_pants_skin",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "add_runaway_token_to_runaway_marketplace",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "price",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "add_kofia_skin_token_to_runaway_marketplace",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "kofia_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "price",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "add_jacket_skin_token_to_runaway_marketplace",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "jacket_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "price",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "add_pants_skin_token_to_runaway_marketplace",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "pants_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "price",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "name": "get_runaway_tba",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "token_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "name": "get_skin_tba",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "token_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "name": "update_runaway_exaperience",
+          "type": "function",
+          "inputs": [
+            {
+              "name": "runaway_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "experience",
+              "type": "core::integer::u64"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "name": "constructor",
+      "type": "constructor",
+      "inputs": [
+        {
+          "name": "nft_class_hash",
+          "type": "core::starknet::class_hash::ClassHash"
+        },
+        {
+          "name": "owner",
+          "type": "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      "kind": "enum",
+      "name": "runaway_ownership::runaway_ownership::RunawayOwnershipContract::Event",
+      "type": "event",
+      "variants": []
+    }
+  ]

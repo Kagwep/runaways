@@ -17,21 +17,22 @@ trait IRunawayOwnershipContract<TContractState> {
     fn add_kofia_skin_token_to_runaway_marketplace(ref self:TContractState,runaway_id: u256, kofia_id: u256, price: felt252);
     fn add_jacket_skin_token_to_runaway_marketplace(ref self:TContractState,runaway_id: u256, jacket_id: u256, price: felt252);
     fn add_pants_skin_token_to_runaway_marketplace(ref self:TContractState,runaway_id: u256, pants_id: u256, price: felt252);
-    
+    fn get_runaway_tba(self: @TContractState, token_id: u256) -> ContractAddress;
+    fn get_skin_tba(self: @TContractState, token_id: u256) -> ContractAddress;
+    fn update_runaway_exaperience(ref self: TContractState,runaway_id:u256, experience: u64);
 }
 
 #[starknet::contract]
 mod RunawayOwnershipContract {
 
-    use core::option::OptionTrait;
+    use runaway_ownership::runaway_ownership::IRunawayOwnershipContract;
+use core::option::OptionTrait;
     use core::traits::TryInto;
     use starknet::{
             ContractAddress, contract_address_const, get_block_number, get_caller_address,
             get_contract_address, get_block_timestamp
         };
     use starknet::class_hash::ClassHash;
-
-   
 
     use runaway_ownership::interfaces::IRunawayContract::{IRunawayContractDispatcher,IRunawayContractDispatcherTrait};
     use runaway_ownership::interfaces::IRunAwayNFTFactory::{IRunAwayNFTFactoryDispatcher, IRunAwayNFTFactoryDispatcherTrait};
@@ -49,7 +50,7 @@ mod RunawayOwnershipContract {
     #[storage]
     struct Storage {
         
-        owner: ContractAddress,
+        pub owner: ContractAddress,
         pub nft_class_hash: ClassHash,
         pub runaway_contract_address: ContractAddress,
         pub runaway_factory_contract_adress: ContractAddress,
@@ -58,6 +59,7 @@ mod RunawayOwnershipContract {
         pub user_runaway: LegacyMap<ContractAddress, bool>,
         pub user_runaways: LegacyMap<(ContractAddress, u256), Runaway>,
         pub runaways_tba: LegacyMap<u256,ContractAddress>,
+        pub skin_tba: LegacyMap<u256,ContractAddress>,
         pub user_tokens: LegacyMap<(ContractAddress, u256), RunawayToken>,
         pub user_skin_tokens: LegacyMap<(ContractAddress, u256), RunawaySkinToken>,
         pub user_runaway_counts: LegacyMap<ContractAddress, u64>,
@@ -102,7 +104,7 @@ mod RunawayOwnershipContract {
                 contract_address: self.runaway_skin_contract_address.read()
             };
 
-            runaway_skin_dispacher.create_skin(skin_type: skin_type, token_id: token_id, runaway_id: runaway_id);
+            runaway_skin_dispacher.create_skin(skin_type: skin_type, token_id: token_id, runaway_id: runaway_id,creator:new_runaway_token_skin_recipient);
 
             let runaway_skin_token = RunawaySkinToken {
                 nft_contract: deployed_address,
@@ -111,6 +113,8 @@ mod RunawayOwnershipContract {
             };
 
             self.user_skin_tokens.write((recipient, token_id), runaway_skin_token);
+
+            self.skin_tba.write(token_id, new_runaway_token_skin_recipient);
         }
 
         fn check_runaway_owner(ref self: ContractState,recipient:ContractAddress, runaway_id: u256){
@@ -178,7 +182,7 @@ mod RunawayOwnershipContract {
 
             self.user_runaways.write((recipient, runaway_id),runaway);
 
-            self.runaways_tba.write(runaway_id, account_address);
+            self.runaways_tba.write(token_id, account_address);
 
             let runaway_token = RunawayToken {
                 nft_contract: deployed_address,
@@ -217,7 +221,7 @@ mod RunawayOwnershipContract {
                 contract_address: self.runaway_factory_contract_adress.read()
             };
 
-            let new_runaway_token_recipient = self.runaways_tba.read(runaway_id);
+            let new_runaway_token_recipient = self.runaways_tba.read(runaway.runaway_token_id);
 
             let (deployed_address, token_id) = runaway_nft_token_dispacher.deploy_and_mint(new_runaway_token_recipient);
 
@@ -240,6 +244,8 @@ mod RunawayOwnershipContract {
             let total_runaways = self.user_runaway_counts.read(new_runaway_token_recipient) + 1;
 
             self.user_runaway_counts.write(new_runaway_token_recipient, total_runaways);
+
+            self.runaways_tba.write(token_id, new_runaway_token_recipient);
 
         }
 
@@ -385,6 +391,7 @@ mod RunawayOwnershipContract {
         }
 
         fn add_pants_skin_token_to_runaway_marketplace(ref self:ContractState,runaway_id: u256, pants_id: u256, price: felt252){
+            
             let caller = get_caller_address();
             
             self.check_runaway_owner(recipient: caller, runaway_id: runaway_id);
@@ -406,6 +413,31 @@ mod RunawayOwnershipContract {
             marketplace_dispacher.add_jacket_skin_token_to_marketplace(pants_id,price,nft_token.nft_contract);
 
         }
+
+        fn update_runaway_exaperience(ref self: ContractState,runaway_id: u256, experience: u64){
+
+            let caller = get_caller_address();
+
+            let runaway_account = self.runaways_tba.read(runaway_id);
+
+            assert(caller == runaway_account, 'Not Owner');
+
+            let runaway_dispacher = IRunawayContractDispatcher {
+                contract_address: self.runaway_contract_address.read()
+            };
+
+            runaway_dispacher.update_runaway(runaway_id, experience);
+
+        }
+
+        fn get_runaway_tba(self: @ContractState, token_id: u256) -> ContractAddress{
+            self.runaways_tba.read(token_id)
+        }
+        fn get_skin_tba(self: @ContractState, token_id: u256) -> ContractAddress{
+            self.skin_tba.read(token_id)
+        }
+
+
     }
 }
 

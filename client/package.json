@@ -25,9 +25,11 @@
     "react-helmet": "^6.1.0",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.24.1",
+    "react-svg": "^16.1.34",
     "starknet": "^6.9.0",
     "starknet-types": "^0.7.2",
-    "starknetkit": "^1.1.9"
+    "starknetkit": "^1.1.9",
+    "tokenbound-connector": "^0.2.21"
   },
   "devDependencies": {
     "@types/cannon": "^0.1.12",

@@ -6,6 +6,7 @@ import Erc20Abi from "../abi/ERC20.json";
 import tokensContract from "../abi/stark_tokens_StarkTokensContract.contract_class.json";
 import runawayCOntract from "../abi/runaway_RunawayContract.contract_class.json";
 import runawayOwnershipAbi from "../abi/runaway_ownership_abi.json";
+import runawaySkins from "../abi/runaway_skis_abi.json";
 
 
 //import pragma_abi from '../assets/pragmaabi.json'
@@ -22,12 +23,17 @@ const TOKEN_CONTRACT = "0x011ce019f9241b50713713cb4ae43032c5e72eab8af208976daa50
 const ERC20_ABI = Erc20Abi;
 const runawayAbi = runawayCOntract.abi;
 const runawayOwnershipABI = runawayOwnershipAbi
+const runawaySkinsAbi = runawaySkins;
 
 const ERC20CONTRACT_ADDRESS= "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
 const runawayContractAddress = "0x07b7b80071b759381bb0198a03b323062739d70089881e9b6189d34d870fc3a1"
 const runawayOwnershipContractAddress = "0x04509b4430d6599c6b16a0ae7b0ed32498bba6d34a842d48871344fedec19053"
+const runawaySkinsContract = "0x0243c0908d2ea17c42fdc55a26487c215f67346745f43eac4525089395137128";
 // Pragma configs
 
 
 // export {contract, provider, account}
-export { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI, ERC20_ABI,ERC20CONTRACT_ADDRESS,TOKEN_CONTRACT,CONTRACT_TOKENS_ABI, runawayAbi, runawayContractAddress, runawayOwnershipABI, runawayOwnershipContractAddress}
+export { 
+    ACCOUNT_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI, ERC20_ABI,ERC20CONTRACT_ADDRESS,
+    TOKEN_CONTRACT,CONTRACT_TOKENS_ABI, runawayAbi, runawayContractAddress,
+     runawayOwnershipABI, runawayOwnershipContractAddress, runawaySkinsAbi, runawaySkinsContract}

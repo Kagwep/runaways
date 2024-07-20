@@ -5,6 +5,8 @@ import { convertToStarknetAddress } from '../../../config/utils';
 import runawaySVg from "../Runaway/runaway.svg";
 import { TokenboundConnector, TokenBoundModal, useTokenBoundModal } from 'tokenbound-connector';
 import { limitChars } from '../../../config/utils';
+import { Link } from 'react-router-dom';
+import { provider } from '../../../config/constants';
 
 
 interface PropTypes {}
@@ -49,8 +51,6 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
       address,
       connection, 
       connectWallet,
-      connectTokenbound,
-      disconnectTokenbound ,
       contract,
       disconnectWallet,
       chainId,account,
@@ -58,27 +58,9 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
       tokens_contract, 
       runaways_contract, 
       runaway_ownership_contract,
-      tokenBoundAccount,
-      tokenBoundAddress,
-      tokenBoundConnection,
     } = useAppContext();
 
-    const {
-      isOpen,
-      openModal,
-      closeModal,
-      value,
-      selectedOption,
-      handleChange,
-      handleChangeInput,
-      resetInputValues,
-  } = useTokenBoundModal();
 
-  const tokenbound = new TokenboundConnector({
-    tokenboundAddress: value, 
-    parentAccountId: selectedOption, 
-  });
-  
     const svgUrl: string = '/runaway.svg';
     console.log(svgUrl)
 
@@ -90,7 +72,7 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
 
     const get_user_runaways = async () => {
 
-      const runaways = await runaways_contract.get_runaway(1);
+      const runaways = await runaways_contract.get_runaway(3);
 
       console.log("runaways: ", runaways)
 
@@ -165,10 +147,7 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
         fetchRunaways();
       }
 
-      if(tokenBoundConnection){
-        closeModal()
-      }
-    },[connection,tokenBoundConnection])
+    },[connection])
 
 
 
@@ -186,64 +165,33 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
                 <div className="bg-white">
                 <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
 
-                    {!tokenBoundConnection ? (
-                        <button
-                        type='button'
-                        className="rounded-md bg-slate-300 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                        onClick={openModal}
-                        >
-                         Tokenbound Connect
-                        </button>
-                        ) : (
-
-                        <button
-                        type='button'
-                        className="rounded-md bg-slate-300 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                        onClick={() => disconnectTokenbound(tokenbound)}>
-                          <span className='text-blue-800'>{limitChars(tokenBoundAddress!,8,true)} </span>Tokenbound disonnect
-                        </button>
-                        )}
-
-                        {isOpen && (
-                          <TokenBoundModal
-                            isOpen={isOpen}
-                            closeModal={closeModal}
-                            value={value}
-                            selectedOption={selectedOption}
-                            handleChange={handleChange}
-                            handleChangeInput={handleChangeInput}
-                            onConnect={() => connectTokenbound(tokenbound)}
-                          />
-                        )}
-                                    <h2 className="text-2xl font-bold tracking-tight text-gray-900">Your Runaways</h2>
+                <h2 className="text-2xl font-bold tracking-tight text-gray-900">Your Runaways</h2>
 
                   <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                    {runaways.map((runaway: any ) => (
-                      <div key={runaway.id} className="group relative">
-                        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                          <img
-                            alt={runaway.imageAlt}
-                            src={`${runaway.svg}`}
-                            className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                          />
-                        </div>
-                        <div className="mt-4 flex justify-between">
-                          <div>
-                            <h3 className="text-sm text-gray-700">
-                                <span aria-hidden="true" className="absolute inset-0" />
-                                Created: <span className='text-orange-800'>{new Date(runaway.created_at.toString() * 1000).toLocaleString()}</span>
-                            </h3>
-                            <p className="mt-1 text-sm text-gray-500">experience: <span className='text-cyan-400'>{runaway.experience.toString()}</span></p>
+                    {runaways.map((runaway: any, index: any ) => (
+                       <Link to={`/runaway/${1}`} key={index} className="group relative block">
+                        <div key={index} className="group relative">
+                          <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                            <img
+                              alt={runaway.imageAlt}
+                              src={`${runaway.svg}`}
+                              className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                            />
                           </div>
-                          <p className="text-sm font-medium text-gray-900">{runaway.price}</p>
-    
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded relative z-10"  onClick={() => handleSetRunawayId(runaway.id)}>
-                          Play
-                        </button>
+                          <div className="mt-4 flex justify-between">
+                            <div>
+                              <h3 className="text-sm text-gray-700">
+                                  <span aria-hidden="true" className="absolute inset-0" />
+                                  Created: <span className='text-orange-800'>{new Date(runaway.created_at.toString() * 1000).toLocaleString()}</span>
+                              </h3>
+                              <p className="mt-1 text-sm text-gray-500">experience: <span className='text-cyan-400'>{runaway.experience.toString()}</span></p>
+                            </div>
+                            <p className="text-sm font-medium text-gray-900">{runaway.price}</p>
 
+                          </div>
+                        
                         </div>
-                       
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 </div>

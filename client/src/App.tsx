@@ -14,7 +14,7 @@ import { OffChainSession } from "@argent/x-sessions";
 import { parseInputAmountToUint256 } from "./helpers/token";
 import MarketplacePage from './components/pages/MarketplacePage';
 import { RunAwaysManage } from "./components/pages/RunAwaysManage";
-
+import RunawayInfo from "./components/pages/RunawayInfo/RunawayInfo";
 
 const App = () => {
 
@@ -126,6 +126,7 @@ const App = () => {
           />
           <Route path="/marketplace" element={<MarketplacePage />} />
           <Route path="/runaways" element={<RunAwaysManage />} />
+          <Route path="/runaway/:id" element={<RunawayInfo />} />
 
         </Routes>
         <CTA />

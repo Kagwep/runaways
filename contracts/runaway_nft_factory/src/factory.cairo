@@ -24,6 +24,7 @@ use starknet::{ContractAddress,get_block_timestamp};
         nft_class_hash: ClassHash,
         created_nfts: LegacyMap::<u32, (ContractAddress, u256)>,
         nft_count: u32,
+        next_token_id: u256,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -43,6 +44,8 @@ use starknet::{ContractAddress,get_block_timestamp};
     fn constructor(ref self: ContractState, nft_class_hash: ClassHash) {
         self.nft_class_hash.write(nft_class_hash);
         self.nft_count.write(0);
+        self.next_token_id.write(1);
+        
     }
 
 
@@ -64,10 +67,13 @@ use starknet::{ContractAddress,get_block_timestamp};
                 array![].span(), // calldata
                 false // deploy_from_zero
             ).unwrap();
+
+            let token_id = self.next_token_id.read();
     
             // Call mint function on the new contract
             let mut calldata = array![];
             calldata.append(recipient.into());
+            calldata.append(token_id.into());
             let result = syscalls::call_contract_syscall(
                 contract_address,
                 selector!("mint"),

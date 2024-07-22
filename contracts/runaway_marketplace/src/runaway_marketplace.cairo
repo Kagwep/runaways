@@ -17,6 +17,10 @@ pub trait IRunawayMarketplaceContract<TContractState> {
     fn get_all_kofias(self: @TContractState) -> Array<KofiaMarketplace>;
     fn get_all_jackets(self: @TContractState) -> Array<JacketMarketplace>;
     fn get_all_pants(self: @TContractState) -> Array<PantsMarketplace>;
+    fn get_kofia(self: @TContractState, kofia_marketplace_id: u256) -> KofiaMarketplace;
+    fn get_jackets(self: @TContractState, jacket_marketplace_id: u256) -> JacketMarketplace;
+    fn get_runaways(self: @TContractState, runaway_marketplace_id: u256) -> RunawayMarketplace;
+    fn get_pants(self: @TContractState, pants_marketplace_id: u256) -> PantsMarketplace;
     
 }
 
@@ -111,6 +115,7 @@ pub mod RunawayMarketplaceContract {
             let runaway = runaway_dispacher.get_runaway(runaway_id);
 
             let runaway__tokens_marketplace = RunawayMarketplace {
+                runaway_marketplace_id: marketplace_id,
                 runaway: runaway,
                 price: price,
                 nft_contract_address: nft_contract
@@ -136,6 +141,7 @@ pub mod RunawayMarketplaceContract {
             let kofia = kofia_dispacher.get_kofia(kofia_id);
 
             let kofia_marketplace = KofiaMarketplace {
+                kofia_marketplace_id: marketplace_id,
                 kofia:kofia,
                 price: price,
                 nft_contract_address:nft_contract
@@ -161,6 +167,7 @@ pub mod RunawayMarketplaceContract {
             let jacket = jacket_dispacher.get_jacket(jacket_id);
 
             let jacket_marketplace = JacketMarketplace {
+                jacket_marketplace_id: marketplace_id,
                 jacket: jacket,
                 price: price,
                 nft_contract_address: nft_contract
@@ -187,6 +194,7 @@ pub mod RunawayMarketplaceContract {
             let pants = pants_dispacher.get_pant(pants_id);
 
             let pants_marketplace = PantsMarketplace {
+                pants_marketplace_id: marketplace_id,
                 pants : pants,
                 price: price,
                 nft_contract_address: nft_contract
@@ -266,6 +274,20 @@ pub mod RunawayMarketplaceContract {
                 i += 1;
             };
             result
+        }
+
+        fn get_kofia(self: @ContractState, kofia_marketplace_id: u256) -> KofiaMarketplace{
+                self.kofias.read(kofia_marketplace_id)
+        }
+        fn get_jackets(self: @ContractState, jacket_marketplace_id: u256) -> JacketMarketplace{
+                self.jackets.read(jacket_marketplace_id)
+        }
+        fn get_runaways(self: @ContractState, runaway_marketplace_id: u256) -> RunawayMarketplace{
+                self.runaways.read(runaway_marketplace_id)
+        }
+        fn get_pants(self: @ContractState, pants_marketplace_id: u256) -> PantsMarketplace{
+                 self.pants.read(pants_marketplace_id)
+
         }
 
 

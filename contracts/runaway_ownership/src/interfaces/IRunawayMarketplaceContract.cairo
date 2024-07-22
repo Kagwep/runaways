@@ -17,5 +17,9 @@ pub trait IRunawayMarketplaceContract<TContractState> {
     fn get_all_kofias(self: @TContractState) -> Array<KofiaMarketplace>;
     fn get_all_jackets(self: @TContractState) -> Array<JacketMarketplace>;
     fn get_all_pants(self: @TContractState) -> Array<PantsMarketplace>;
+    fn get_kofia(self: @TContractState, kofia_marketplace_id: u256) -> KofiaMarketplace;
+    fn get_jackets(self: @TContractState, jacket_marketplace_id: u256) -> JacketMarketplace;
+    fn get_runaways(self: @TContractState, runaway_marketplace_id: u256) -> RunawayMarketplace;
+    fn get_pants(self: @TContractState, pants_marketplace_id: u256) -> PantsMarketplace;
     
 }

@@ -11,7 +11,7 @@ export const navLinks = [
   },
   {
     id: "/marketplace",
-    title:"Auction"
+    title:"Marketplace"
   }
 ];
 

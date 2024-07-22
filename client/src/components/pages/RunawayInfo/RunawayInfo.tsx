@@ -281,11 +281,9 @@ const RunawayInfo = () => {
 
     }
 
-    const updateSkin = (color: any) => {
+    const updateSkin = (color: any, pathId: any) => {
 
         const svgSource = runaway.svg
-
-        const pathId = "pants_color";
 
         let svgString;
 
@@ -335,6 +333,52 @@ const RunawayInfo = () => {
         }));
 
     }
+
+    //fn add_runaway_token_to_runaway_marketplace(ref self:TContractState, runaway_id: u256, price: felt252);
+
+      const add_runaway_token_to_runaway_marketplace = async() => {
+        try{
+          await runaway_ownership_contract.add_runaway_token_to_runaway_marketplace(2,"0.001");
+          console.log('done');
+          await get_user_runaway();
+          
+        }catch(error){
+          console.log(error);
+        }
+      }
+
+
+      // fn add_kofia_skin_token_to_runaway_marketplace(ref self:TContractState,runaway_id: u256, kofia_id: u256, price: felt252);
+
+      const add_kofia_skin_token_to_runaway_marketplace = async() => {
+        try{
+          await runaway_ownership_contract.add_kofia_skin_token_to_runaway_marketplace(1,1,"0.001");
+          console.log('done');
+
+        }catch(error){
+          console.log(error);
+        }
+      }
+
+      const add_jacket_skin_token_to_runaway_marketplace = async() => {
+        try{
+          await runaway_ownership_contract.add_jacket_skin_token_to_runaway_marketplace(1,1,"0.001");
+          console.log('done');
+
+        }catch(error){
+          console.log(error);
+        }
+      }
+
+      const add_pants_skin_token_to_runaway_marketplace = async() => {
+        try{
+          await runaway_ownership_contract.add_pants_skin_token_to_runaway_marketplace(1,1,"0.001");
+          console.log('done');
+
+        }catch(error){
+          console.log(error);
+        }
+      }
 
       useEffect(() => {
 
@@ -428,9 +472,13 @@ const RunawayInfo = () => {
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold my-2 py-2 px-4 rounded relative z-10"  onClick={() => handleSetRunawayId(runaway.id)}>
                           Play
                     </button>
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold my-2 py-2 px-4 rounded relative z-10"  onClick={() => update_runaway_exaperience()}>
-                          Auction
+                    {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold my-2 py-2 px-4 rounded relative z-10"  onClick={() => update_runaway_exaperience()}>
+                          uptade experience
+                    </button> */}
+                    <button className="bg-cyan-500 hover:bg-blue-700 text-white font-bold my-2 py-2 px-4 rounded relative z-10"  onClick={() => add_runaway_token_to_runaway_marketplace()}>
+                          Add to Marketplace
                     </button>
+
                     </dl>
                   </div>
                   <div className="">
@@ -481,8 +529,11 @@ const RunawayInfo = () => {
                                 <p className="mt-1 text-sm text-gray-500">experience: <span className='text-cyan-400'>{runaway.experience.toString()}</span></p>
                                 </div>
                                 <p className="text-sm font-medium text-gray-900">{runaway.price}</p> */}
-                                <button className="rounded-md bg-slate-300 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={()=> updateSkin(pant.color)}>
+                                <button className="rounded-md bg-slate-300 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={()=> updateSkin(pant.color,"pants_color")}>
                                     use
+                                </button>
+                                <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={() => add_pants_skin_token_to_runaway_marketplace()}>
+                                 Add To Marketplace
                                 </button>
 
                             </div>
@@ -524,7 +575,12 @@ const RunawayInfo = () => {
                                 <p className="mt-1 text-sm text-gray-500">experience: <span className='text-cyan-400'>{runaway.experience.toString()}</span></p>
                                 </div>
                                 <p className="text-sm font-medium text-gray-900">{runaway.price}</p> */}
-
+                                <button className="rounded-md bg-slate-300 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={()=> updateSkin(jacket.color,"jacket_color")}>
+                                    use
+                                </button>
+                                <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={() => add_jacket_skin_token_to_runaway_marketplace()}>
+                                 Add To Marketplace
+                                </button>
                             </div>
                             
                             </div>
@@ -564,6 +620,12 @@ const RunawayInfo = () => {
                                 <p className="mt-1 text-sm text-gray-500">experience: <span className='text-cyan-400'>{runaway.experience.toString()}</span></p>
                                 </div>
                                 <p className="text-sm font-medium text-gray-900">{runaway.price}</p> */}
+                              <button className="rounded-md bg-slate-300 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={()=> updateSkin(kofia.color,"kofia_color")}>
+                                    use
+                                </button>
+                                <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={() => add_kofia_skin_token_to_runaway_marketplace()}>
+                                 Add To Marketplace
+                                </button>
 
                             </div>
                             
@@ -578,7 +640,7 @@ const RunawayInfo = () => {
 
                     
 
-                </div>
+            </div>
       </div>
     
     </>

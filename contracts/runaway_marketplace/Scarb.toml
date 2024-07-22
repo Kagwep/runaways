@@ -9,5 +9,6 @@ edition = "2023_11"
 starknet = ">=2.6.4"
 
 
+
 [[target.starknet-contract]]
 sierra = true

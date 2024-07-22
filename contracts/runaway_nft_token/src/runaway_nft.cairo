@@ -2,7 +2,7 @@ use starknet::ContractAddress;
 
 #[starknet::interface]
 trait IRunAwayNFT<TContractState> {
-    fn mint(ref self: TContractState, recipient: ContractAddress) -> u256;
+    fn mint(ref self: TContractState, recipient: ContractAddress, token_id:u256) -> u256;
 }
 
 #[starknet::contract]
@@ -43,18 +43,15 @@ mod RunAwayNFT {
     fn constructor(ref self: ContractState) {
         let name = "RunAwayNFT";
         let symbol = "RAN";
-        let base_uri = "https://hambre.infura-ipfs.io";
+        let base_uri = "https://gcqzhwxcljffjobytgaa.supabase.co/functions/v1/get-nft-image?token_id=";
         self.erc721.initializer(name, symbol, base_uri);
-        self.next_token_id.write(1);
     }
 
     #[abi(embed_v0)]
     impl RunAwayNFTImpl of IRunAwayNFT<ContractState> {
 
-        fn mint(ref self: ContractState, recipient: ContractAddress) -> u256 {
-            let token_id = self.next_token_id.read();
+        fn mint(ref self: ContractState, recipient: ContractAddress, token_id:u256) -> u256 {
             self.erc721.mint(recipient, token_id);
-            self.next_token_id.write(token_id + 1);
             token_id
         }
          

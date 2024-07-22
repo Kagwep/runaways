@@ -98,3 +98,30 @@ export function convertToStarknetAddress(bigIntAddress: bigint) {
     // Add '0x' prefix
     return '0x' + hexAddress;
 }
+
+export function feltToString(felt: any) {
+    // Check if the input is a valid number
+    if (typeof felt !== 'number' && typeof felt !== 'bigint') {
+      throw new Error('Input must be a number or BigInt');
+    }
+  
+    // Convert to hexadecimal string
+    const hexString = felt.toString(16);
+    
+    // Ensure even length by padding with a leading zero if necessary
+    const paddedHexString = hexString.length % 2 === 0 ? hexString : '0' + hexString;
+  
+    // Convert hex to ASCII
+    let asciiString = '';
+    for (let i = 0; i < paddedHexString.length; i += 2) {
+      const hexChar = paddedHexString.substr(i, 2);
+      const asciiCode = parseInt(hexChar, 16);
+      // Only add printable ASCII characters
+      if (asciiCode >= 32 && asciiCode <= 126) {
+        asciiString += String.fromCharCode(asciiCode);
+      }
+    }
+  
+    return asciiString;
+  }
+  

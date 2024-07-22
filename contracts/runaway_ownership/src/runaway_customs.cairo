@@ -17,11 +17,14 @@ pub struct RunawayGenes {
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
 pub struct Runaway {
+    pub runaway_id: u256,
     pub runaway_token_id: u256,
     pub genes: RunawayGenes,
     pub created_at: u64,   
     pub experience: u64,
-    pub nr_children: u16,    
+    pub nr_children: u16, 
+    pub tb_owner: ContractAddress,
+    pub user: ContractAddress,   
 }
 
 
@@ -55,6 +58,7 @@ pub struct Pants {
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
 pub struct PantsMarketplace {
+    pub pants_marketplace_id: u256,
     pub pants: Pants,
     pub price: felt252,
     pub nft_contract_address: ContractAddress,
@@ -63,6 +67,7 @@ pub struct PantsMarketplace {
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
 pub struct RunawayMarketplace {
+    pub runaway_marketplace_id: u256,
     pub runaway: Runaway,
     pub price: felt252,
     pub nft_contract_address: ContractAddress,
@@ -71,6 +76,7 @@ pub struct RunawayMarketplace {
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
 pub struct JacketMarketplace {
+    pub jacket_marketplace_id: u256,
     pub jacket: Jacket,
     pub price: felt252,
     pub nft_contract_address: ContractAddress,
@@ -79,8 +85,10 @@ pub struct JacketMarketplace {
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
 pub struct KofiaMarketplace {
+    pub kofia_marketplace_id: u256,
     pub kofia: Kofia,
     pub price: felt252,
     pub nft_contract_address: ContractAddress,
 }
+
 

@@ -80,6 +80,7 @@ pub mod SkinContract {
 
     #[storage]
     pub struct Storage {
+        
         pub kofias: LegacyMap::<u256, Kofia>,
         pub jackets: LegacyMap::<u256, Jacket>,
         pub pants: LegacyMap::<u256, Pants>,
@@ -92,7 +93,6 @@ pub mod SkinContract {
         pub runaway_kofia_skins: LegacyMap<(ContractAddress, u256), Kofia>,
         pub runaway_jacket_skins: LegacyMap<(ContractAddress, u256), Jacket>,
         pub runaway_pants_skins: LegacyMap<(ContractAddress, u256), Pants>,
-
 
     }
 

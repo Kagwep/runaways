@@ -7,6 +7,8 @@ import { TokenboundConnector, TokenBoundModal, useTokenBoundModal } from 'tokenb
 import { limitChars } from '../../../config/utils';
 import { Link } from 'react-router-dom';
 import { provider } from '../../../config/constants';
+import { createClient } from '@supabase/supabase-js'
+
 
 
 interface PropTypes {}
@@ -45,7 +47,9 @@ const runawayse = [
 export const RunAwaysManage: React.FC<PropTypes> = () => {
 
     const [runaways , setRunaways] = useState<any>([])
-    const [playingRunaway, setPlayingRunaway] = useState<number>(0)
+    const [playingRunaway, setPlayingRunaway] = useState<number>(0);
+
+    const supabase = createClient('https://gcqzhwxcljffjobytgaa.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjcXpod3hjbGpmZmpvYnl0Z2FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjE2NzE0ODQsImV4cCI6MjAzNzI0NzQ4NH0.RLfS7LCLxxnt8GiueQRaZvzFJCdnKqoEvwaQs9GP7aI')
 
     const { 
       address,
@@ -64,6 +68,19 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
     const svgUrl: string = '/runaway.svg';
     console.log(svgUrl)
 
+    async function storeSVG(tokenId: number, svgData: string) {
+      const { data, error } = await supabase
+        .from('nft_svgs')
+        .insert([
+          { id: tokenId, svg_data: svgData }
+        ])
+    
+      if (error) {
+        console.error('Error storing SVG:', error)
+        return false
+      }
+      return true
+    }
 
     const handleSetRunawayId=  (id: number) => {
       setPlayingRunaway(id)
@@ -72,7 +89,7 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
 
     const get_user_runaways = async () => {
 
-      const runaways = await runaways_contract.get_runaway(3);
+      const runaways = await runaways_contract.get_runaway(1);
 
       console.log("runaways: ", runaways)
 
@@ -85,6 +102,8 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
         
         const modifiedSvg = changePathFillType(svg, runaway.genes);
         runaway.svg = modifiedSvg;
+
+       
 
         console.log(".....",runaway)
        
@@ -169,12 +188,12 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
 
                   <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                     {runaways.map((runaway: any, index: any ) => (
-                       <Link to={`/runaway/${1}`} key={index} className="group relative block">
-                        <div key={index} className="group relative">
+                    
+                        <div key={index} className="">
                           <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
                             <img
                               alt={runaway.imageAlt}
-                              src={`${runaway.svg}`}
+                              src={`https://gcqzhwxcljffjobytgaa.supabase.co/functions/v1/get-nft-image?token_id=1`}
                               className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                             />
                           </div>
@@ -188,10 +207,15 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
                             </div>
                             <p className="text-sm font-medium text-gray-900">{runaway.price}</p>
 
+                            
+
                           </div>
+
+                          <button type='button' onClick={() =>  storeSVG(1, runaway.svg)}> test upload </button>
                         
                         </div>
-                      </Link>
+                        
+           
                     ))}
                   </div>
                 </div>
@@ -227,7 +251,7 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
                       Start your game.
                     </h2>
                     <p className="mt-6 text-lg leading-8 text-gray-300">
-                      Collect rewards and grow your runaway, Create new skins. Acquire tour favourite runaways and skins on auction.
+                      Collect rewards and grow your runaway, Create new skins. Acquire tour favourite runaways and skins on Marketplace.
                     </p>
                     <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
                       <button

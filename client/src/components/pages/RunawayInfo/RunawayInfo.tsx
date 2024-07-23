@@ -4,7 +4,7 @@ import { useAppContext } from '../../../providers/AppProvider';
 import { TokenboundConnector, TokenBoundModal,useTokenBoundModal } from 'tokenbound-connector';
 import { convertToStarknetAddress, limitChars } from '../../../config/utils';
 import { Abi, Contract } from 'starknet';
-import { runawayOwnershipABI, runawayOwnershipContractAddress, runawaySkinsAbi, runawaySkinsContract  } from '../../../config/config';
+import { runawayAbi, runawayContractAddress, runawayOwnershipABI, runawayOwnershipContractAddress, runawaySkinsAbi, runawaySkinsContract  } from '../../../config/config';
 import { provider } from '../../../config/constants';
 import { SiKinsta } from 'react-icons/si';
 
@@ -65,7 +65,7 @@ const RunawayInfo = () => {
 
     const get_user_runaway = async () => {
 
-        console.log(";;;;;;",Number(id))
+        const runaways_contract = new Contract(runawayAbi,runawayContractAddress,provider)
 
         const runaway = await runaways_contract.get_runaway(Number(id));
   
@@ -387,17 +387,13 @@ const RunawayInfo = () => {
           await get_runaway_tba();
           await get_kofia_skins();
         };
-         
-        if (connection){
-          fetchRunaway();
-        }
   
         if(tokenBoundConnection){
           closeModal()
           fetchRunaway()
         
         }
-      },[connection,tokenBoundConnection,runaway])
+      },[tokenBoundConnection])
   
   
           

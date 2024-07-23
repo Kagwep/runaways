@@ -25,7 +25,8 @@ pub struct Runaway {
     pub experience: u64,
     pub nr_children: u16, 
     pub tb_owner: ContractAddress,
-    pub user: ContractAddress,   
+    pub user: ContractAddress,
+    pub metadata_updated: bool   
 }
 
 
@@ -40,10 +41,11 @@ pub trait IRunawayContract<TContractState> {
         ref self: TContractState
     ) -> (Color, Color, Color, Color);
     fn mix_colors(ref self :TContractState,color1: Color, color2: Color) -> Color;
-    fn get_user_runaways(self :@TContractState) -> Array<Runaway>;
+    fn get_user_runaways(self :@TContractState,user: ContractAddress) -> Array<Runaway>;
     fn set_runaway_ownership_contract(ref self: TContractState, runaway_ownership_contract: ContractAddress);
     fn update_runaway_ownership(ref self:TContractState,runaway_id:u256, new_tb_owner:ContractAddress,new_user: ContractAddress);
     fn update_runaway_ownership_sale(ref self:TContractState,runaway_id:u256,new_user: ContractAddress);
+    fn approve_update_of_metadata(ref self:TContractState,runaway_id:u256);
 }
 
 
@@ -121,7 +123,7 @@ pub mod RunawayContract {
                 comb_color
             };
 
-            let new_runaway = Runaway { runaway_id: runaway_id,runaway_token_id: runaway_token_id, genes: new_runaway_genes, created_at: get_block_timestamp(), experience:0, nr_children:0,tb_owner: owner, user: caller};
+            let new_runaway = Runaway { runaway_id: runaway_id,runaway_token_id: runaway_token_id, genes: new_runaway_genes, created_at: get_block_timestamp(), experience:0, nr_children:0,tb_owner: owner, user: caller, metadata_updated: false};
 
             self.runaways.write(runaway_id, new_runaway);
 
@@ -168,7 +170,7 @@ pub mod RunawayContract {
                 comb_color: offspring_comb_color,
             };
 
-            let new_runaway = Runaway { runaway_id: off_runaway_id, runaway_token_id: runaway_token_id, genes: new_runaway_genes, created_at: get_block_timestamp(), experience:0, nr_children:0, tb_owner:owner, user: caller};
+            let new_runaway = Runaway { runaway_id: off_runaway_id, runaway_token_id: runaway_token_id, genes: new_runaway_genes, created_at: get_block_timestamp(), experience:0, nr_children:0, tb_owner:owner, user: caller,metadata_updated: false};
 
             self.runaways.write(off_runaway_id, new_runaway);
 
@@ -250,9 +252,7 @@ pub mod RunawayContract {
             Color { r, g, b }
         }
 
-        fn get_user_runaways(self :@ContractState) -> Array<Runaway>{
-
-            let caller = get_caller_address();
+        fn get_user_runaways(self :@ContractState,user: ContractAddress) -> Array<Runaway>{
 
             let mut runaways = ArrayTrait::<Runaway>::new();
 
@@ -269,7 +269,7 @@ pub mod RunawayContract {
 
                     let runaway  = self.runaways.read(count);
 
-                    if runaway.user == caller {
+                    if runaway.user == user {
 
                         runaways.append(runaway);
                     }
@@ -321,6 +321,22 @@ pub mod RunawayContract {
             runaway.user = new_user;
 
             self.runaways.write(runaway_id,runaway);
+
+        }
+
+        fn approve_update_of_metadata(ref self:ContractState,runaway_id:u256){
+
+            let caller = get_contract_address();
+
+            let mut runaway = self.runaways.read(runaway_id);
+
+            assert(caller == runaway.user, 'Not Runaway User');
+
+            runaway.metadata_updated = true;
+
+            self.runaways.write(runaway_id,runaway);
+
+            
 
         }
 

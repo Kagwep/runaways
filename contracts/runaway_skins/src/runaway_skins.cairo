@@ -22,6 +22,9 @@ struct Kofia {
     color: Color,
     runaway_id: u256,
     token_id: u256,
+    tba_owner: ContractAddress,
+    user: ContractAddress,
+    metadata_updated: bool
 }
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
@@ -29,6 +32,9 @@ struct Jacket {
     color: Color,
     runaway_id: u256,
     token_id: u256,
+    tba_owner: ContractAddress,
+    user: ContractAddress,
+    metadata_updated: bool
 }
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
@@ -36,6 +42,9 @@ struct Pants {
     color: Color,
     runaway_id: u256,
     token_id: u256,
+    tba_owner: ContractAddress,
+    user: ContractAddress,
+    metadata_updated: bool
 }
 
 
@@ -61,6 +70,9 @@ pub trait ISkinContract<TContractState> {
     fn get_runaway_kofias(self: @TContractState, runaway_id: u256,owner: ContractAddress) -> Array<Kofia>;
     fn get_runaway_jackets(self: @TContractState, runaway_id: u256,owner: ContractAddress) -> Array<Jacket>;
     fn get_runaway_pants(self: @TContractState, runaway_id: u256,owner: ContractAddress) -> Array<Pants>;
+    fn approve_kofia_metadata(ref self:TContractState, kofia_id: u256);
+    fn approve_jacket_metadata(ref self:TContractState, jacket_id: u256);
+    fn approve_pants_metadata(ref self:TContractState, pants_id: u256);
 }
 
 
@@ -120,7 +132,7 @@ pub mod SkinContract {
             skin_type: SkinType,
             token_id: u256,
             runaway_id: u256,
-            creator: ContractAddress
+            creator: ContractAddress,
         )  -> bool{
 
             let request_time = get_block_timestamp();
@@ -136,14 +148,14 @@ pub mod SkinContract {
 
             match skin_type {
                 SkinType::Kofia => {
-                    let kofia = Kofia { color, runaway_id, token_id };
+                    let kofia = Kofia { color, runaway_id, token_id,tba_owner: creator,user: creator,metadata_updated: false };
                     let kofia_id = self.next_kofia_skin_id.read();
                     self.kofias.write(kofia_id, kofia);
                     self.next_kofia_skin_id.write(kofia_id + 1);
                     self.runaway_kofia_skins.write((creator, kofia_id), kofia);
                 },
                 SkinType::Jacket => {
-                    let jacket = Jacket { color, runaway_id, token_id };
+                    let jacket = Jacket { color, runaway_id, token_id,tba_owner: creator,user: creator,metadata_updated: false };
                     let jacket_id = self.next_jacket_skin_id.read();
                     self.jackets.write(jacket_id, jacket);
                     self.next_jacket_skin_id.write(jacket_id + 1);
@@ -151,7 +163,7 @@ pub mod SkinContract {
 
                 },
                 SkinType::Pants => {
-                    let pants = Pants { color, runaway_id, token_id };
+                    let pants = Pants { color, runaway_id, token_id,tba_owner: creator,user: creator,metadata_updated: false };
                     let pant_id = self.next_pant_skin_id.read();
                     self.pants.write(pant_id, pants);
                     self.next_pant_skin_id.write(pant_id + 1);
@@ -163,7 +175,6 @@ pub mod SkinContract {
             true  
 
         }
-
 
 
         fn update_skin( ref self:ContractState,skin_id: u256, skin_type: SkinType, runaway_id: u256, caller_ownership: ContractAddress) ->  bool{
@@ -333,6 +344,46 @@ pub mod SkinContract {
             }
 
             pants
+        }
+
+        fn approve_kofia_metadata(ref self:ContractState, kofia_id: u256){
+
+                let caller = get_caller_address();
+
+                let mut  kofia = self.kofias.read(kofia_id);
+
+                assert(kofia.user == caller,'Not User');
+
+                kofia.metadata_updated = true;
+
+                self.kofias.write(kofia_id, kofia);
+
+        }
+
+        fn approve_jacket_metadata(ref self:ContractState, jacket_id: u256){
+            let caller = get_caller_address();
+
+            let mut  jacket = self.jackets.read(jacket_id);
+
+            assert(jacket.user == caller,'Not User');
+
+            jacket.metadata_updated = true;
+
+            self.jackets.write(jacket_id, jacket);
+        }
+
+        fn approve_pants_metadata(ref self:ContractState, pants_id: u256){
+
+            let caller = get_caller_address();
+
+            let mut pants = self.pants.read(pants_id);
+
+            assert(pants.user == caller,'Not User');
+
+            pants.metadata_updated = true;
+
+            self.pants.write(pants_id, pants);
+
         }
 
     }

@@ -23,4 +23,7 @@ pub trait ISkinContract<TContractState> {
     fn get_runaway_kofias(self: @TContractState, runaway_id: u256,owner: ContractAddress) -> Array<Kofia>;
     fn get_runaway_jackets(self: @TContractState, runaway_id: u256,owner: ContractAddress) -> Array<Jacket>;
     fn get_runaway_pants(self: @TContractState, runaway_id: u256,owner: ContractAddress) -> Array<Pants>;
+    fn approve_kofia_metadata(ref self:TContractState, kofia_id: u256);
+    fn approve_jacket_metadata(ref self:TContractState, jacket_id: u256);
+    fn approve_pants_metadata(ref self:TContractState, pants_id: u256);
 }

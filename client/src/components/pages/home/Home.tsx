@@ -12,14 +12,8 @@ const Home = () => (
   <div className={`${styles.flexStart}`}>
       <div className={`${styles.boxWidth}`}>
         <Hero />
-        <LastEpisode />
       </div>
     </div>
-    <Overview />
-
-    <Maps />
-
-
   </>
 );
 

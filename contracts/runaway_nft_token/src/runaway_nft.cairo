@@ -2,7 +2,7 @@ use starknet::ContractAddress;
 
 #[starknet::interface]
 trait IRunAwayNFT<TContractState> {
-    fn mint(ref self: TContractState, recipient: ContractAddress, token_id:u256) -> u256;
+    fn mint(ref self: TContractState, recipient: ContractAddress,token_id_low: felt252,token_id_high: felt252) -> u256;
 }
 
 #[starknet::contract]
@@ -50,7 +50,8 @@ mod RunAwayNFT {
     #[abi(embed_v0)]
     impl RunAwayNFTImpl of IRunAwayNFT<ContractState> {
 
-        fn mint(ref self: ContractState, recipient: ContractAddress, token_id:u256) -> u256 {
+        fn mint(ref self: ContractState, recipient: ContractAddress, token_id_low: felt252,token_id_high: felt252) -> u256 {
+            let token_id: u256 = u256 { low: token_id_low.try_into().unwrap(), high: token_id_high.try_into().unwrap() };
             self.erc721.mint(recipient, token_id);
             token_id
         }

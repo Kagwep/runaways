@@ -73,16 +73,20 @@ use starknet::{ContractAddress,get_block_timestamp};
             // Call mint function on the new contract
             let mut calldata = array![];
             calldata.append(recipient.into());
-            calldata.append(token_id.into());
+            calldata.append(token_id.low.into());
+            calldata.append(token_id.high.into());
             let result = syscalls::call_contract_syscall(
                 contract_address,
                 selector!("mint"),
                 calldata.span()
             ).unwrap();
+
+            self.next_token_id.write(token_id + 1);
     
             let token_id = *result.at(0);
 
             self.nft_count.write(self.nft_count.read() + 1);
+            
 
             (contract_address, token_id.try_into().unwrap())
         }

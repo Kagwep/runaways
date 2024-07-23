@@ -1,369 +1,441 @@
 [
-    {
-      "name": "SkinImpl",
-      "type": "impl",
-      "interface_name": "runaway_skins::runaway_skins::ISkinContract"
-    },
-    {
-      "name": "runaway_skins::runaway_skins::SkinType",
-      "type": "enum",
-      "variants": [
-        {
-          "name": "Kofia",
-          "type": "()"
-        },
-        {
-          "name": "Jacket",
-          "type": "()"
-        },
-        {
-          "name": "Pants",
-          "type": "()"
-        }
-      ]
-    },
-    {
-      "name": "core::integer::u256",
-      "type": "struct",
-      "members": [
-        {
-          "name": "low",
-          "type": "core::integer::u128"
-        },
-        {
-          "name": "high",
-          "type": "core::integer::u128"
-        }
-      ]
-    },
-    {
-      "name": "core::bool",
-      "type": "enum",
-      "variants": [
-        {
-          "name": "False",
-          "type": "()"
-        },
-        {
-          "name": "True",
-          "type": "()"
-        }
-      ]
-    },
-    {
-      "name": "runaway_skins::runaway_skins::Color",
-      "type": "struct",
-      "members": [
-        {
-          "name": "r",
-          "type": "core::integer::u8"
-        },
-        {
-          "name": "g",
-          "type": "core::integer::u8"
-        },
-        {
-          "name": "b",
-          "type": "core::integer::u8"
-        }
-      ]
-    },
-    {
-      "name": "runaway_skins::runaway_skins::Kofia",
-      "type": "struct",
-      "members": [
-        {
-          "name": "color",
-          "type": "runaway_skins::runaway_skins::Color"
-        },
-        {
-          "name": "runaway_id",
-          "type": "core::integer::u256"
-        },
-        {
-          "name": "token_id",
-          "type": "core::integer::u256"
-        }
-      ]
-    },
-    {
-      "name": "runaway_skins::runaway_skins::Jacket",
-      "type": "struct",
-      "members": [
-        {
-          "name": "color",
-          "type": "runaway_skins::runaway_skins::Color"
-        },
-        {
-          "name": "runaway_id",
-          "type": "core::integer::u256"
-        },
-        {
-          "name": "token_id",
-          "type": "core::integer::u256"
-        }
-      ]
-    },
-    {
-      "name": "runaway_skins::runaway_skins::Pants",
-      "type": "struct",
-      "members": [
-        {
-          "name": "color",
-          "type": "runaway_skins::runaway_skins::Color"
-        },
-        {
-          "name": "runaway_id",
-          "type": "core::integer::u256"
-        },
-        {
-          "name": "token_id",
-          "type": "core::integer::u256"
-        }
-      ]
-    },
-    {
-      "name": "runaway_skins::runaway_skins::ISkinContract",
-      "type": "interface",
-      "items": [
-        {
-          "name": "create_skin",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "skin_type",
-              "type": "runaway_skins::runaway_skins::SkinType"
-            },
-            {
-              "name": "token_id",
-              "type": "core::integer::u256"
-            },
-            {
-              "name": "runaway_id",
-              "type": "core::integer::u256"
-            },
-            {
-              "name": "creator",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ],
-          "outputs": [
-            {
-              "type": "core::bool"
-            }
-          ],
-          "state_mutability": "external"
-        },
-        {
-          "name": "get_kofia",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "kofia_id",
-              "type": "core::integer::u256"
-            }
-          ],
-          "outputs": [
-            {
-              "type": "runaway_skins::runaway_skins::Kofia"
-            }
-          ],
-          "state_mutability": "view"
-        },
-        {
-          "name": "get_jacket",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "jacket_id",
-              "type": "core::integer::u256"
-            }
-          ],
-          "outputs": [
-            {
-              "type": "runaway_skins::runaway_skins::Jacket"
-            }
-          ],
-          "state_mutability": "view"
-        },
-        {
-          "name": "get_pant",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "pant_id",
-              "type": "core::integer::u256"
-            }
-          ],
-          "outputs": [
-            {
-              "type": "runaway_skins::runaway_skins::Pants"
-            }
-          ],
-          "state_mutability": "view"
-        },
-        {
-          "name": "generate_color",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "seed",
-              "type": "core::integer::u64"
-            }
-          ],
-          "outputs": [
-            {
-              "type": "runaway_skins::runaway_skins::Color"
-            }
-          ],
-          "state_mutability": "external"
-        },
-        {
-          "name": "generate_colors",
-          "type": "function",
-          "inputs": [],
-          "outputs": [
-            {
-              "type": "runaway_skins::runaway_skins::Color"
-            }
-          ],
-          "state_mutability": "external"
-        },
-        {
-          "name": "mix_colors",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "color1",
-              "type": "runaway_skins::runaway_skins::Color"
-            },
-            {
-              "name": "color2",
-              "type": "runaway_skins::runaway_skins::Color"
-            }
-          ],
-          "outputs": [
-            {
-              "type": "runaway_skins::runaway_skins::Color"
-            }
-          ],
-          "state_mutability": "external"
-        },
-        {
-          "name": "skin_type_to_u8",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "skin_type",
-              "type": "runaway_skins::runaway_skins::SkinType"
-            }
-          ],
-          "outputs": [
-            {
-              "type": "core::integer::u8"
-            }
-          ],
-          "state_mutability": "external"
-        },
-        {
-          "name": "update_skin",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "skin_id",
-              "type": "core::integer::u256"
-            },
-            {
-              "name": "skin_type",
-              "type": "runaway_skins::runaway_skins::SkinType"
-            },
-            {
-              "name": "runaway_id",
-              "type": "core::integer::u256"
-            },
-            {
-              "name": "caller_ownership",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ],
-          "outputs": [
-            {
-              "type": "core::bool"
-            }
-          ],
-          "state_mutability": "external"
-        },
-        {
-          "name": "get_runaway_kofias",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "runaway_id",
-              "type": "core::integer::u256"
-            },
-            {
-              "name": "owner",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ],
-          "outputs": [
-            {
-              "type": "core::array::Array::<runaway_skins::runaway_skins::Kofia>"
-            }
-          ],
-          "state_mutability": "view"
-        },
-        {
-          "name": "get_runaway_jackets",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "runaway_id",
-              "type": "core::integer::u256"
-            },
-            {
-              "name": "owner",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ],
-          "outputs": [
-            {
-              "type": "core::array::Array::<runaway_skins::runaway_skins::Jacket>"
-            }
-          ],
-          "state_mutability": "view"
-        },
-        {
-          "name": "get_runaway_pants",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "runaway_id",
-              "type": "core::integer::u256"
-            },
-            {
-              "name": "owner",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ],
-          "outputs": [
-            {
-              "type": "core::array::Array::<runaway_skins::runaway_skins::Pants>"
-            }
-          ],
-          "state_mutability": "view"
-        }
-      ]
-    },
-    {
-      "name": "constructor",
-      "type": "constructor",
-      "inputs": []
-    },
-    {
-      "kind": "enum",
-      "name": "runaway_skins::runaway_skins::SkinContract::Event",
-      "type": "event",
-      "variants": []
-    }
-  ]
+  {
+    "name": "SkinImpl",
+    "type": "impl",
+    "interface_name": "runaway_skins::runaway_skins::ISkinContract"
+  },
+  {
+    "name": "runaway_skins::runaway_skins::SkinType",
+    "type": "enum",
+    "variants": [
+      {
+        "name": "Kofia",
+        "type": "()"
+      },
+      {
+        "name": "Jacket",
+        "type": "()"
+      },
+      {
+        "name": "Pants",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "name": "core::integer::u256",
+    "type": "struct",
+    "members": [
+      {
+        "name": "low",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "high",
+        "type": "core::integer::u128"
+      }
+    ]
+  },
+  {
+    "name": "core::bool",
+    "type": "enum",
+    "variants": [
+      {
+        "name": "False",
+        "type": "()"
+      },
+      {
+        "name": "True",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "name": "runaway_skins::runaway_skins::Color",
+    "type": "struct",
+    "members": [
+      {
+        "name": "r",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "g",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "b",
+        "type": "core::integer::u8"
+      }
+    ]
+  },
+  {
+    "name": "runaway_skins::runaway_skins::Kofia",
+    "type": "struct",
+    "members": [
+      {
+        "name": "color",
+        "type": "runaway_skins::runaway_skins::Color"
+      },
+      {
+        "name": "runaway_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "token_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "tba_owner",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "user",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "metadata_updated",
+        "type": "core::bool"
+      }
+    ]
+  },
+  {
+    "name": "runaway_skins::runaway_skins::Jacket",
+    "type": "struct",
+    "members": [
+      {
+        "name": "color",
+        "type": "runaway_skins::runaway_skins::Color"
+      },
+      {
+        "name": "runaway_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "token_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "tba_owner",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "user",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "metadata_updated",
+        "type": "core::bool"
+      }
+    ]
+  },
+  {
+    "name": "runaway_skins::runaway_skins::Pants",
+    "type": "struct",
+    "members": [
+      {
+        "name": "color",
+        "type": "runaway_skins::runaway_skins::Color"
+      },
+      {
+        "name": "runaway_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "token_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "tba_owner",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "user",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "metadata_updated",
+        "type": "core::bool"
+      }
+    ]
+  },
+  {
+    "name": "runaway_skins::runaway_skins::ISkinContract",
+    "type": "interface",
+    "items": [
+      {
+        "name": "create_skin",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "skin_type",
+            "type": "runaway_skins::runaway_skins::SkinType"
+          },
+          {
+            "name": "token_id",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "runaway_id",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "creator",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::bool"
+          }
+        ],
+        "state_mutability": "external"
+      },
+      {
+        "name": "get_kofia",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "kofia_id",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "runaway_skins::runaway_skins::Kofia"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "get_jacket",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "jacket_id",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "runaway_skins::runaway_skins::Jacket"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "get_pant",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "pant_id",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "runaway_skins::runaway_skins::Pants"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "generate_color",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "seed",
+            "type": "core::integer::u64"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "runaway_skins::runaway_skins::Color"
+          }
+        ],
+        "state_mutability": "external"
+      },
+      {
+        "name": "generate_colors",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "runaway_skins::runaway_skins::Color"
+          }
+        ],
+        "state_mutability": "external"
+      },
+      {
+        "name": "mix_colors",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "color1",
+            "type": "runaway_skins::runaway_skins::Color"
+          },
+          {
+            "name": "color2",
+            "type": "runaway_skins::runaway_skins::Color"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "runaway_skins::runaway_skins::Color"
+          }
+        ],
+        "state_mutability": "external"
+      },
+      {
+        "name": "skin_type_to_u8",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "skin_type",
+            "type": "runaway_skins::runaway_skins::SkinType"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::integer::u8"
+          }
+        ],
+        "state_mutability": "external"
+      },
+      {
+        "name": "update_skin",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "skin_id",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "skin_type",
+            "type": "runaway_skins::runaway_skins::SkinType"
+          },
+          {
+            "name": "runaway_id",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "caller_ownership",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::bool"
+          }
+        ],
+        "state_mutability": "external"
+      },
+      {
+        "name": "get_runaway_kofias",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "runaway_id",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "owner",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::array::Array::<runaway_skins::runaway_skins::Kofia>"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "get_runaway_jackets",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "runaway_id",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "owner",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::array::Array::<runaway_skins::runaway_skins::Jacket>"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "get_runaway_pants",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "runaway_id",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "owner",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::array::Array::<runaway_skins::runaway_skins::Pants>"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "approve_kofia_metadata",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "kofia_id",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "approve_jacket_metadata",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "jacket_id",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "approve_pants_metadata",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "pants_id",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      }
+    ]
+  },
+  {
+    "name": "constructor",
+    "type": "constructor",
+    "inputs": []
+  },
+  {
+    "kind": "enum",
+    "name": "runaway_skins::runaway_skins::SkinContract::Event",
+    "type": "event",
+    "variants": []
+  }
+]

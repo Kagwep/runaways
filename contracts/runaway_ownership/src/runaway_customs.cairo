@@ -24,7 +24,8 @@ pub struct Runaway {
     pub experience: u64,
     pub nr_children: u16, 
     pub tb_owner: ContractAddress,
-    pub user: ContractAddress,   
+    pub user: ContractAddress,
+    pub metadata_updated: bool   
 }
 
 
@@ -40,6 +41,9 @@ pub struct Kofia {
     pub color: Color,
     pub runaway_id: u256,
     pub token_id: u256,
+    pub tba_owner: ContractAddress,
+    pub user: ContractAddress,
+    pub metadata_updated: bool
 }
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
@@ -47,6 +51,9 @@ pub struct Jacket {
     pub color: Color,
     pub runaway_id: u256,
     pub token_id: u256,
+    pub tba_owner: ContractAddress,
+    pub user: ContractAddress,
+    pub metadata_updated: bool
 }
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
@@ -54,6 +61,9 @@ pub struct Pants {
     pub color: Color,
     pub runaway_id: u256,
     pub token_id: u256,
+    pub tba_owner: ContractAddress,
+    pub user: ContractAddress,
+    pub metadata_updated: bool
 }
 
 #[derive(Drop, Serde, Copy, starknet::Store)]

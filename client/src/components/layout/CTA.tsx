@@ -7,7 +7,7 @@ const CTA = () =>(
           <a href="#">DOWNLOAD GAME CLIENT</a>
         </li>
         <li className="font-poppins font-semibold transition-all ease-in duration-300 relative cursor-pointer text-center text-[13px] hover:bg-[gray]/40 px-4 py-2 rounded-[8px] uppercase mr-6 text-white">
-          <a href="#">DOWNLOAD RIOT MOBILE COMPANION APP</a>
+          <a href="#">DOWNLOAD Runaways MOBILE COMPANION APP</a>
         </li>
       </ul>
     </div>

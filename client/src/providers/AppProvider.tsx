@@ -129,6 +129,10 @@ const AppProvider = ({ children }: IAppProvider) => {
           setAddress(wallet.selectedAddress)
           setChainId(wallet.chainId)
 
+          localStorage.setItem('walletConnected', 'true');
+          localStorage.setItem('walletAddress', wallet.selectedAddress);
+          localStorage.setItem('walletChainId', wallet.chainId);
+
         }
 
         console.log(wallet?.chainId)
@@ -163,6 +167,11 @@ const AppProvider = ({ children }: IAppProvider) => {
         setConnection(null);
         setAccount(null);
         setAddress('');
+
+        localStorage.removeItem('walletConnected');
+        localStorage.removeItem('walletAddress');
+        localStorage.removeItem('walletChainId');
+
       }
 
 
@@ -222,29 +231,54 @@ const AppProvider = ({ children }: IAppProvider) => {
     }), [account, contract, address, erc20_contract,chainId, tokenBoundAccount]);
 
     useEffect(() => {
-        const connectToStarknet = async () => {
-            const { wallet } = await connect({
-                webWalletUrl: "https://web.argent.xyz",
-                connectors: [
-                  new WebWalletConnector({
-                    url: "https://web.argent.xyz",
-                  }),
-                ],
-              })
-
-            if (wallet && wallet.isConnected) {
-                setConnection(connection);
-                setAccount(wallet.account);
-                setAddress(wallet.selectedAddress)
+        const reconnectWallet = async () => {
+            const isConnected = localStorage.getItem('walletConnected');
+            if (isConnected === 'true') {
+              const storedAddress = localStorage.getItem('walletAddress');
+              const storedChainId = localStorage.getItem('walletChainId');
+        
+              if (storedAddress && storedChainId) {
+                try {
+                  // Attempt to reconnect using stored information
+                  const res = await connect({
+                    modalMode: "neverAsk", // Prevents showing the modal on auto-reconnect
+                    webWalletUrl: ARGENT_WEBWALLET_URL,
+                    argentMobileOptions: {
+                      dappName: "Argent | Portfolio",
+                      url: window.location.hostname,
+                      chainId: constants.NetworkName.SN_SEPOLIA,
+                      icons: [],
+                    },
+                  });
+        
+                  const { wallet } = res;
+        
+                  if (wallet && wallet.isConnected && wallet.selectedAddress === storedAddress) {
+                    setConnection(wallet);
+                    setAccount(wallet.account);
+                    setAddress(wallet.selectedAddress);
+                    setChainId(wallet.chainId);
+                    console.log('Reconnected successfully');
+                  } else {
+                    throw new Error('Reconnection failed or address mismatch');
+                  }
+                } catch (error) {
+                  console.error('Failed to reconnect:', error);
+                  // Clear stored data if reconnection fails
+                  localStorage.removeItem('walletConnected');
+                  localStorage.removeItem('walletAddress');
+                  localStorage.removeItem('walletChainId');
+                }
+              }
             }
-            switchNetwork(connection)
-
-        };
+          };
+        
+          reconnectWallet();
        
         makeContractConnection()
         
-        connectToStarknet();
-    }, [connection,account]);
+
+    }, [connection]);
 
     // useEffect(() => {
     //     makeContractConnection()

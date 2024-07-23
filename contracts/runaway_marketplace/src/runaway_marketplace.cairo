@@ -67,6 +67,9 @@ pub mod RunawayMarketplaceContract {
     fn constructor(ref self: ContractState, owner: ContractAddress) {
         self.owner.write(owner);
         self.next_runaway_marketplace_id.write(1);
+        self.next_kofia_marketplace_id.write(1);
+        self.next_jacket_marketplace_id.write(1);
+        self.next_pants_marketplace_id.write(1);
     }
 
     #[abi(embed_v0)]

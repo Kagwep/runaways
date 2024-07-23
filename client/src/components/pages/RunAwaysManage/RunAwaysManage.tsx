@@ -8,7 +8,8 @@ import { limitChars } from '../../../config/utils';
 import { Link } from 'react-router-dom';
 import { provider } from '../../../config/constants';
 import { createClient } from '@supabase/supabase-js'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 interface PropTypes {}
@@ -49,7 +50,7 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
     const [runaways , setRunaways] = useState<any>([])
     const [playingRunaway, setPlayingRunaway] = useState<number>(0);
 
-    const supabase = createClient('https://gcqzhwxcljffjobytgaa.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjcXpod3hjbGpmZmpvYnl0Z2FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjE2NzE0ODQsImV4cCI6MjAzNzI0NzQ4NH0.RLfS7LCLxxnt8GiueQRaZvzFJCdnKqoEvwaQs9GP7aI')
+    const supabase = createClient(import.meta.env.VITE_SUPERBASE_URL,import.meta.env.VITE_SUPERBASE_ANON_KEY);
 
     const { 
       address,
@@ -89,16 +90,24 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
 
     const get_user_runaways = async () => {
 
-      const runaways = await runaways_contract.get_runaway(1);
+      let runaways;
+      try {
+        runaways = await runaways_contract.get_user_runaways(address);
+      } catch (error) {
+        console.error('Error fetching user runaways:', error);
+        // Handle the error appropriately
+        runaways = []; // Or set to null, or handle it in a way that makes sense for your application
+      }
 
-      console.log("runaways: ", runaways)
-
-      const new_runaways = [runaways as any];
+      if (runaways.length == 0){
+        const notify = () => toast(" Press Create Runaway to get your genesis runaway !");
+        notify()
+      }
 
       const response = await fetch(svgUrl);
        const svg = await response.text();
 
-        new_runaways.forEach((runaway: any) => {
+        runaways.forEach((runaway: any) => {
         
         const modifiedSvg = changePathFillType(svg, runaway.genes);
         runaway.svg = modifiedSvg;
@@ -109,9 +118,11 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
        
       });
 
-      setRunaways([...new_runaways]);
+      setRunaways(runaways);
         
     }
+
+    
 
     const changePathFillType = (svgString: any, genes: any) => {
       const parser = new DOMParser();
@@ -146,11 +157,32 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
         try{
           await runaway_ownership_contract.create_runaway_and_tba();
           console.log('done');
+        
+          const notify = () => toast(" You have Created A runaway !");
+          notify()
+
           await get_user_runaways();
-          
         }catch(error){
           console.log(error);
         }
+
+    }
+
+    const approve_update_metadata = async (runaway_token_id: number,runaway_id:number, svg: string) => {
+
+      const has_uploaded = await storeSVG(Number(runaway_token_id), svg);
+
+      if (has_uploaded){
+        try{
+          await runaways_contract.approve_update_of_metadata(runaway_id);
+          console.log('done');
+          await get_user_runaways();
+          const notify = () => toast(" Update Successful !");
+          notify()
+        }catch(error){
+          console.log(error);
+        }
+      }
 
     }
 
@@ -188,12 +220,13 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
 
                   <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                     {runaways.map((runaway: any, index: any ) => (
-                    
+                      <div  key={index}>
+                    <Link to={`/runaway/${runaway.runaway_id}`} className="group relative block">
                         <div key={index} className="">
                           <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
                             <img
                               alt={runaway.imageAlt}
-                              src={`https://gcqzhwxcljffjobytgaa.supabase.co/functions/v1/get-nft-image?token_id=1`}
+                              src={`${runaway.svg}`}
                               className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                             />
                           </div>
@@ -210,12 +243,18 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
                             
 
                           </div>
-
-                          <button type='button' onClick={() =>  storeSVG(1, runaway.svg)}> test upload </button>
-                        
                         </div>
-                        
-           
+                      </Link>
+
+                        {runaway.metadata_updated ? (
+                          <p></p>
+                        ):(
+                          <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={() => approve_update_metadata(runaway.runaway_token_id,runaway.runaway_id,runaway.svg)}>
+                            update 
+                          </button>
+                        )}
+                      
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -290,6 +329,8 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
 
           )
          }
+
+         <ToastContainer />
       </>
     );
   };

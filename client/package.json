@@ -27,6 +27,7 @@
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.24.1",
     "react-svg": "^16.1.34",
+    "react-toastify": "^10.0.5",
     "starknet": "^6.9.0",
     "starknet-types": "^0.7.2",
     "starknetkit": "^1.1.9",

@@ -24,7 +24,8 @@ pub struct Runaway {
     pub experience: u64,
     pub nr_children: u16, 
     pub tb_owner: ContractAddress,
-    pub user: ContractAddress,   
+    pub user: ContractAddress,
+    pub metadata_updated: bool   
 }
 
 
@@ -38,24 +39,34 @@ pub enum SkinType {
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
 pub struct Kofia {
-    color: Color,
-    runaway_id: u256,
-    token_id: u256,
+    pub color: Color,
+    pub runaway_id: u256,
+    pub token_id: u256,
+    pub tba_owner: ContractAddress,
+    pub user: ContractAddress,
+    pub metadata_updated: bool
 }
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
 pub struct Jacket {
-    color: Color,
-    runaway_id: u256,
-    token_id: u256,
+    pub color: Color,
+    pub runaway_id: u256,
+    pub token_id: u256,
+    pub tba_owner: ContractAddress,
+    pub user: ContractAddress,
+    pub metadata_updated: bool
 }
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
 pub struct Pants {
-    color: Color,
-    runaway_id: u256,
-    token_id: u256,
+    pub color: Color,
+    pub runaway_id: u256,
+    pub token_id: u256,
+    pub tba_owner: ContractAddress,
+    pub user: ContractAddress,
+    pub metadata_updated: bool
 }
+
 
 #[derive(Drop, Serde, Copy, starknet::Store)]
 pub struct PantsMarketplace {

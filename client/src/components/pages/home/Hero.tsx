@@ -39,7 +39,7 @@ const Hero = () => (
       className="absolute z-[-1] w-auto min-w-full min-h-full max-w-none"
     >
       <source
-        src="https://assets.contentstack.io/v3/assets/bltb6530b271fddd0b1/blt714eaee50b90fc27/62cc7dcc6a8fb133b0ff7e55/VALORANT_ANNO22_SHATTERED_16x9_27s.mp4"
+        src="https://res.cloudinary.com/dydj8hnhz/video/upload/v1721861317/runaway_sxlaiz.mp4"
         type="video/mp4"
       />
       Your browser does not support the video tag.

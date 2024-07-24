@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from 'react'
+import React,{ useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useAppContext } from '../../../providers/AppProvider';
 import { TokenboundConnector, TokenBoundModal,useTokenBoundModal } from 'tokenbound-connector';
@@ -7,7 +7,11 @@ import { Abi, Contract } from 'starknet';
 import { runawayAbi, runawayContractAddress, runawayOwnershipABI, runawayOwnershipContractAddress, runawaySkinsAbi, runawaySkinsContract  } from '../../../config/config';
 import { provider } from '../../../config/constants';
 import { SiKinsta } from 'react-icons/si';
-
+import RunawayPriceModal from './RunawayPriceModal';
+import KofiaPriceModal from './KofiaPriceModal';
+import JacketPriceModal from './JackePriceModal';
+import PantsPriceModal from './PantsPriceModal';
+import { Runaway } from '../Runaway/Runaway';
 
 const RunawayInfo = () => {
 
@@ -19,6 +23,135 @@ const RunawayInfo = () => {
     const [pants, setPants] = useState<any | null>(null)
     const [jackets, setJackets] = useState<any | null>(null)
     const [runawaytba, setRunawayTba] = useState('')
+    const [showOptions, setShowOptions] = useState(false);
+    const optionsRef = useRef(null);
+    const [presetValue, setPresetValue] = useState('');
+    const [isModalOpenOne, setIsModalOpenOne] = useState(false);
+    const [isModalOpenTwo, setIsModalOpenTwo] = useState(false);
+    const [isModalOpenThree, setIsModalOpenThree] = useState(false);
+    const [isModalOpenFour, setIsModalOpenFour] = useState(false);
+
+      interface Outfit {
+        "pants-two": string;
+        "pants-one": string;
+        "jacket-arm-right": string;
+        "jacket-arm-left": string;
+        "jacket": string;
+        "hat": string;
+        "comb": string;
+        "face": string;
+      }
+    
+      type OutfitItem = keyof Outfit;
+
+ 
+        const [outfit, setOutfit] = useState<Outfit>({
+          "pants-two": "",
+          "pants-one": "",
+          "jacket-arm-right": "",
+          "jacket-arm-left": "",
+          "jacket": "",
+          "hat": "",
+          "comb": "",
+          "face": ""
+        });
+
+
+
+    const openModalOne = () => setIsModalOpenOne(true);
+    const closeModalOne = () => setIsModalOpenOne(false);
+
+    const openModalTwo = () => setIsModalOpenTwo(true);
+    const closeModalTwo = () => setIsModalOpenTwo(false);
+
+    const openModalThree = () => setIsModalOpenThree(true);
+    const closeModalThree = () => setIsModalOpenThree(false);
+
+    const openModalFour = () => setIsModalOpenFour(true);
+    const closeModalFour = () => setIsModalOpenFour(false);
+  
+    const handleSubmit = async (price: any) => {
+      console.log('Submitted price:', price);
+      // Handle the submitted price here
+     await add_runaway_token_to_runaway_marketplace(Number(runaway.runaway_id),price.toString())
+    };
+
+    const handleSubmitOne = async (price: any, id:number) => {
+      console.log('Submitted price:', price,id);
+      // Handle the submitted price here
+    // await add_runaway_token_to_runaway_marketplace(Number(runaway.runaway_id),price.toString())
+       //await add_jacket_skin_token_to_runaway_marketplace()
+    };
+
+
+    const handleSubmitTwo = async (price: any) => {
+      console.log('Submitted price:', price);
+      // Handle the submitted price here
+     await add_runaway_token_to_runaway_marketplace(Number(runaway.runaway_id),price.toString())
+    };
+
+
+    const handleSubmitThree = async (price: any) => {
+      console.log('Submitted price:', price);
+      // Handle the submitted price here
+     await add_runaway_token_to_runaway_marketplace(Number(runaway.runaway_id),price.toString())
+    };
+
+
+
+  
+    const handleButtonClick = () => {
+      setShowOptions(true);
+    };
+  
+    const selectOption = async (option: string) => {
+      console.log('Selected option:', option);
+
+      if (option=="pants"){
+        try{
+
+          const new_runaway_ownership_contract = new Contract(runawayOwnershipABI,runawayOwnershipContractAddress,tokenBoundAccount).typedv2(runawayOwnershipABI as Abi);
+
+          await new_runaway_ownership_contract.create_runaway_pants_skin(runaway.runaway_id);
+          console.log('done');
+          await get_user_runaway();
+          
+        }catch(error){
+          console.log(error);
+        }
+      }else if(option == "jacket"){
+        try{
+          const new_runaway_ownership_contract = new Contract(runawayOwnershipABI,runawayOwnershipContractAddress,tokenBoundAccount).typedv2(runawayOwnershipABI as Abi);
+
+          await new_runaway_ownership_contract.create_runaway_jacket_skin(runaway.runaway_id);
+          console.log('done');
+          await get_user_runaway();
+          
+        }catch(error){
+          console.log(error);
+        }
+      }else if(option == "kofia"){
+        try{
+          const new_runaway_ownership_contract = new Contract(runawayOwnershipABI,runawayOwnershipContractAddress,tokenBoundAccount).typedv2(runawayOwnershipABI as Abi);
+
+          await new_runaway_ownership_contract.create_runaway_kofia_skin(runaway.runaway_id);
+          console.log('done');
+          await get_user_runaway();
+          
+        }catch(error){
+          console.log(error);
+        }
+      }
+
+      setShowOptions(false);
+    };
+  
+    const handleClickOutside = (event: { target: any; }) => {
+      if (optionsRef.current && !optionsRef.current.contains(event.target)) {
+        setShowOptions(false);
+      }
+    };
+  
 
         const { 
         address,
@@ -78,11 +211,28 @@ const RunawayInfo = () => {
          const modifiedSvg = changePathFillType(svg, runaway.genes);
          runaway.svg = modifiedSvg;
 
-         await get_kofia_skins();
-         await get_jackets_skins();
-         await get_pants_skins()
+         await get_kofia_skins(runaway.runaway_id);
+         await get_jackets_skins(runaway.runaway_id);
+         await get_pants_skins(runaway.runaway_id)
+
+         
+
+        const to_send_color =  [runaway.genes.comb_color.r, runaway.genes.comb_color.g, runaway.genes.comb_color.b].map((val) => val.toString(16).padStart(2, '0')).join('')
+        const to_send_color_body =  [runaway.genes.body_color.r, runaway.genes.body_color.g, runaway.genes.body_color.b].map((val) => val.toString(16).padStart(2, '0')).join('')
+
+        setOutfit((prevOutfit) => ({
+          ...prevOutfit,
+          ["comb"]: `#${to_send_color}`
+        }));
+
+        setOutfit((prevOutfit) => ({
+          ...prevOutfit,
+          ["face"]: `#${to_send_color_body}`
+        }));
+
   
         setRunaway(runaway);
+        setPresetValue(runaway.tb_owner);
           
       }
   
@@ -137,15 +287,15 @@ const RunawayInfo = () => {
 
       //fn update_runaway_exaperience(ref self: TContractState,runaway_id:u256, experience: u64);
 
-      const update_runaway_exaperience = async () => {
+      const update_runaway_exaperience = async (runaway_id: number) => {
      
         try{
 
         const new_runaway_ownership_contract = new Contract(runawayOwnershipABI,runawayOwnershipContractAddress,tokenBoundAccount).typedv2(runawayOwnershipABI as Abi);
 
-        console.log(new_runaway_ownership_contract);
+        console.log(tokenBoundAddress);
 
-          await new_runaway_ownership_contract.update_runaway_exaperience(1,250);
+          await new_runaway_ownership_contract.update_runaway_exaperience(Number(runaway_id),500);
           console.log('done');
           await get_user_runaway();
           
@@ -171,20 +321,9 @@ const RunawayInfo = () => {
 
     //create_runaway_kofia_skin(ref self:TContractState, runaway_id: u256);
 
-    const create_runaway_skin = async() => {
-        try{
-            await runaway_ownership_contract.create_runaway_pants_skin(1);
-            console.log('done');
-            await get_user_runaway();
-            
-          }catch(error){
-            console.log(error);
-          }
-    }
-
     //get_runaway_kofias(self: @TContractState, runaway_id: u256,owner: ContractAddress) -> Array<Kofia>;
 
-    const get_kofia_skins = async() => {
+    const get_kofia_skins = async(runaway_id: number) => {
 
         console.log("called ...")
 
@@ -216,7 +355,7 @@ const RunawayInfo = () => {
 
     
 
-    const get_jackets_skins = async() => {
+    const get_jackets_skins = async(runaway_id: number) => {
 
         console.log("called ...")
 
@@ -249,16 +388,14 @@ const RunawayInfo = () => {
 
 
     
-    const get_pants_skins = async() => {
+    const get_pants_skins = async(runaway_id: number) => {
 
         console.log("called ...")
-
-        
 
         const new_runaway_skin_contract = new Contract(runawaySkinsAbi,runawaySkinsContract,provider).typedv2(runawaySkinsAbi as Abi);
 
 
-        const pants_skins = await new_runaway_skin_contract.get_runaway_pants(1,tokenBoundAddress)
+        const pants_skins = await new_runaway_skin_contract.get_runaway_pants(runaway_id,tokenBoundAddress)
 
         console.log("fyhfdytwq",pants_skins)
 
@@ -282,6 +419,57 @@ const RunawayInfo = () => {
     }
 
     const updateSkin = (color: any, pathId: any) => {
+
+      const lowercaseItem = pathId.toLowerCase();
+
+      if (lowercaseItem.includes('kofia')) {
+        const to_send_color =  [color.r, color.g, color.b].map((val) => val.toString(16).padStart(2, '0')).join('')
+        setOutfit((prevOutfit) => ({
+          ...prevOutfit,
+          ["hat"]: `#${to_send_color}`
+        }));
+
+
+      }
+      
+      if (lowercaseItem.includes('pants')) {
+        const to_send_color =  [color.r, color.g, color.b].map((val) => val.toString(16).padStart(2, '0')).join('')
+
+        setOutfit((prevOutfit) => ({
+          ...prevOutfit,
+          ["pants-two"]: `#${to_send_color}`
+        }));
+
+
+        setOutfit((prevOutfit) => ({
+          ...prevOutfit,
+          ["pants-one"]: `#${to_send_color}`
+        }));
+
+
+      }
+      
+      if (lowercaseItem.includes('jacket')) {
+        const to_send_color =  [color.r, color.g, color.b].map((val) => val.toString(16).padStart(2, '0')).join('')
+
+        setOutfit((prevOutfit) => ({
+          ...prevOutfit,
+          ["jacket-arm-right"]: `#${to_send_color}`
+        }));
+
+
+        setOutfit((prevOutfit) => ({
+          ...prevOutfit,
+          ["jacket-arm-left"]: `#${to_send_color}`
+        }));
+
+        setOutfit((prevOutfit) => ({
+          ...prevOutfit,
+          ["jacket"]: `#${to_send_color}`
+        }));
+
+
+      }
 
         const svgSource = runaway.svg
 
@@ -336,9 +524,10 @@ const RunawayInfo = () => {
 
     //fn add_runaway_token_to_runaway_marketplace(ref self:TContractState, runaway_id: u256, price: felt252);
 
-      const add_runaway_token_to_runaway_marketplace = async() => {
+      const add_runaway_token_to_runaway_marketplace = async(runaway_id:number, price: string) => {
         try{
-          await runaway_ownership_contract.add_runaway_token_to_runaway_marketplace(2,"0.001");
+          let new_runaway_ownership_contract = new Contract(runawayOwnershipABI,runawayOwnershipContractAddress,tokenBoundAccount).typedv2(runawayOwnershipABI as Abi);
+          await new_runaway_ownership_contract.add_runaway_token_to_runaway_marketplace(runaway_id,price);
           console.log('done');
           await get_user_runaway();
           
@@ -350,9 +539,10 @@ const RunawayInfo = () => {
 
       // fn add_kofia_skin_token_to_runaway_marketplace(ref self:TContractState,runaway_id: u256, kofia_id: u256, price: felt252);
 
-      const add_kofia_skin_token_to_runaway_marketplace = async() => {
+      const add_kofia_skin_token_to_runaway_marketplace = async(runaway_id:number, kofia_id:number,price:string) => {
         try{
-          await runaway_ownership_contract.add_kofia_skin_token_to_runaway_marketplace(1,1,"0.001");
+          let new_runaway_ownership_contract = new Contract(runawayOwnershipABI,runawayOwnershipContractAddress,tokenBoundAccount).typedv2(runawayOwnershipABI as Abi);
+          await new_runaway_ownership_contract.add_kofia_skin_token_to_runaway_marketplace(runaway_id,kofia_id,price);
           console.log('done');
 
         }catch(error){
@@ -360,9 +550,10 @@ const RunawayInfo = () => {
         }
       }
 
-      const add_jacket_skin_token_to_runaway_marketplace = async() => {
+      const add_jacket_skin_token_to_runaway_marketplace = async(runaway_id:number, jacket_id:number,price:string) => {
         try{
-          await runaway_ownership_contract.add_jacket_skin_token_to_runaway_marketplace(1,1,"0.001");
+          let new_runaway_ownership_contract = new Contract(runawayOwnershipABI,runawayOwnershipContractAddress,tokenBoundAccount).typedv2(runawayOwnershipABI as Abi);
+          await new_runaway_ownership_contract.add_jacket_skin_token_to_runaway_marketplace(runaway_id,jacket_id,price);
           console.log('done');
 
         }catch(error){
@@ -370,9 +561,10 @@ const RunawayInfo = () => {
         }
       }
 
-      const add_pants_skin_token_to_runaway_marketplace = async() => {
+      const add_pants_skin_token_to_runaway_marketplace = async(runaway_id:number, pants_id:number,price:string) => {
         try{
-          await runaway_ownership_contract.add_pants_skin_token_to_runaway_marketplace(1,1,"0.001");
+          let new_runaway_ownership_contract = new Contract(runawayOwnershipABI,runawayOwnershipContractAddress,tokenBoundAccount).typedv2(runawayOwnershipABI as Abi);
+          await new_runaway_ownership_contract.add_pants_skin_token_to_runaway_marketplace(runaway_id,pants_id,price);
           console.log('done');
 
         }catch(error){
@@ -381,14 +573,21 @@ const RunawayInfo = () => {
       }
 
       useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+      }, []);
+
+      useEffect(() => {
 
         const fetchRunaway = async () => {
           await get_user_runaway();
           await get_runaway_tba();
-          await get_kofia_skins();
+    
         };
   
-        if(tokenBoundConnection){
+        if(tokenBoundConnection ){
           closeModal()
           fetchRunaway()
         
@@ -399,12 +598,29 @@ const RunawayInfo = () => {
           
 
     function handleSetRunawayId(id: any): void {
-        throw new Error('Function not implemented.');
+        setPlayingRunaway(id)
+    }
+
+    function TokenBoundModalWrapper(props: any) {
+      React.useEffect(() => {
+        if (props.presetValue) {
+          props.handleChangeInput({ target: { value: props.presetValue } });
+        }
+      }, [props.presetValue]);
+    
+      return <TokenBoundModal {...props} />;
     }
 
   return (
     <>
-    <div className="bg-white">
+
+      {playingRunaway != 0 ? (
+
+          <Runaway runaway_id={playingRunaway} outfit={outfit} />
+
+      ):(
+        <>
+      <div className="bg-white">
     <div className="mx-auto max-w-2xl px-4 sm:px-6 sm:py-4 lg:max-w-7xl lg:px-8">
     {!tokenBoundConnection ? (
                         <button
@@ -425,7 +641,7 @@ const RunawayInfo = () => {
                         )}
 
                         {isOpen && (
-                          <TokenBoundModal
+                            <TokenBoundModalWrapper
                             isOpen={isOpen}
                             closeModal={closeModal}
                             value={value}
@@ -433,8 +649,9 @@ const RunawayInfo = () => {
                             handleChange={handleChange}
                             handleChangeInput={handleChangeInput}
                             onConnect={() => connectTokenbound(tokenbound)}
+                            defaultValue={presetValue}
                           />
-        )}
+                       )}
 
       </div>
 
@@ -444,6 +661,7 @@ const RunawayInfo = () => {
                 <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-16 px-4 py-4 sm:px-6 sm:py-4 lg:max-w-7xl lg:grid-cols-2 lg:px-8">
                   
                   <div>
+                    <p>{limitChars(runaway.tb_owner!,8,true)} </p>
                     <h6 className="">Created at: <span className='text-orange-800'>{new Date(runaway.created_at.toString() * 1000).toLocaleString()}</span> </h6>
                     <p className="mt-4 text-gray-500">
                       experience: <span className='text-cyan-400'>{runaway.experience.toString()}</span>
@@ -451,7 +669,7 @@ const RunawayInfo = () => {
 
                     { tokenBoundConnection && runaway.experience > 200 ? 
                         (
-                            <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={() => create_runaway_offspring()}>
+                            <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 my-2 border border-gray-400 rounded shadow" onClick={() => create_runaway_offspring()}>
                                  Create Offspring
                            </button>
                         ) : (
@@ -459,22 +677,64 @@ const RunawayInfo = () => {
                         )
                     }
 
-                    <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={() => create_runaway_skin()}>
-                                 Create Skin
-                    </button>
+                <div className="flex flex-col items-center p-6 bg-gray-100 rounded-lg shadow-md">
+                      <button 
+                        onClick={handleButtonClick}
+                        className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 my-2 border border-gray-400 rounded shadow"
+                      >
+                        Create Clothing
+                      </button>
+                      {showOptions && (
+                        <div ref={optionsRef} className="flex flex-col space-y-3 w-full max-w-xs">
+                          <button 
+                            onClick={() => selectOption('pants')}
+                            className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out"
+                          >
+                            Pants
+                          </button>
+                          <button 
+                            onClick={() => selectOption('kofia')}
+                            className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out"
+                          >
+                            Kofia
+                          </button>
+                          <button 
+                            onClick={() => selectOption('jacket')}
+                            className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out"
+                          >
+                            Jacket
+                          </button>
+                          <button 
+                            onClick={() => setShowOptions(false)}
+                            className="px-4 py-2 text-gray-500 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition duration-300 ease-in-out"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
 
           
                     <dl className="mt-16 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 sm:gap-y-16 lg:gap-x-8">
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold my-2 py-2 px-4 rounded relative z-10"  onClick={() => handleSetRunawayId(runaway.id)}>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold my-2 py-2 px-4 rounded relative z-10"  onClick={() => handleSetRunawayId(runaway.runaway_id)}>
                           Play
                     </button>
-                    {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold my-2 py-2 px-4 rounded relative z-10"  onClick={() => update_runaway_exaperience()}>
-                          uptade experience
-                    </button> */}
-                    <button className="bg-cyan-500 hover:bg-blue-700 text-white font-bold my-2 py-2 px-4 rounded relative z-10"  onClick={() => add_runaway_token_to_runaway_marketplace()}>
-                          Add to Marketplace
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold my-2 py-2 px-4 rounded relative z-10"  onClick={() => update_runaway_exaperience(runaway.runaway_id)}>
+                          update experience
                     </button>
-
+                             <div className="p-4">
+                                <button
+                                  onClick={openModalOne}
+                                  className="bg-cyan-500 hover:bg-blue-700 text-white font-bold my-2 py-2 px-4 rounded relative z-10"
+                                >
+                                  Add to Marketplace
+                                </button>
+                                <RunawayPriceModal
+                                  isOpen={isModalOpenOne}
+                                  onClose={closeModalOne}
+                                  onSubmit={handleSubmit}
+                                />
+                              </div>
                     </dl>
                   </div>
                   <div className="">
@@ -528,10 +788,10 @@ const RunawayInfo = () => {
                                 <button className="rounded-md bg-slate-300 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={()=> updateSkin(pant.color,"pants_color")}>
                                     use
                                 </button>
-                                <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={() => add_pants_skin_token_to_runaway_marketplace()}>
+                                <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" >
                                  Add To Marketplace
                                 </button>
-
+  
                             </div>
                             
                             </div>
@@ -574,9 +834,20 @@ const RunawayInfo = () => {
                                 <button className="rounded-md bg-slate-300 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={()=> updateSkin(jacket.color,"jacket_color")}>
                                     use
                                 </button>
-                                <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={() => add_jacket_skin_token_to_runaway_marketplace()}>
-                                 Add To Marketplace
+                                <div className="p-4">
+                                <button
+                                  onClick={openModalTwo}
+                                  className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+                                >
+                                  Add to Marketplace
                                 </button>
+                                <JacketPriceModal
+                                  isOpen={isModalOpenTwo}
+                                  onClose={closeModalTwo}
+                                  onSubmit={handleSubmitOne}
+                                  id={jacket.jacket_id}
+                                />
+                              </div>
                             </div>
                             
                             </div>
@@ -619,7 +890,7 @@ const RunawayInfo = () => {
                               <button className="rounded-md bg-slate-300 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" onClick={()=> updateSkin(kofia.color,"kofia_color")}>
                                     use
                                 </button>
-                                <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={() => add_kofia_skin_token_to_runaway_marketplace()}>
+                                <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" >
                                  Add To Marketplace
                                 </button>
 
@@ -638,6 +909,11 @@ const RunawayInfo = () => {
 
             </div>
       </div>
+        
+        </>
+      )}
+
+
     
     </>
   )

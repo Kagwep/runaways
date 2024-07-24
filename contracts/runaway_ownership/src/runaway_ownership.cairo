@@ -17,19 +17,18 @@ trait IRunawayOwnershipContract<TContractState> {
     fn add_kofia_skin_token_to_runaway_marketplace(ref self:TContractState,runaway_id: u256, kofia_id: u256, price: felt252);
     fn add_jacket_skin_token_to_runaway_marketplace(ref self:TContractState,runaway_id: u256, jacket_id: u256, price: felt252);
     fn add_pants_skin_token_to_runaway_marketplace(ref self:TContractState,runaway_id: u256, pants_id: u256, price: felt252);
-    fn get_runaway_tba(self: @TContractState, token_id: u256) -> ContractAddress;
+    fn get_runaway_tba(self: @TContractState, runaway_id: u256) -> ContractAddress;
     fn get_skin_tba(self: @TContractState, token_id: u256) -> ContractAddress;
     fn update_runaway_exaperience(ref self: TContractState,runaway_id:u256, experience: u64);
     fn acquire_runaway(ref self:TContractState,runaway_id:u256,runaway_marketplace_id: u256, amount: u256);
     fn bound_runaway(ref self:TContractState,runaway_id:u256);
-
 }
 
 #[starknet::contract]
 mod RunawayOwnershipContract {
 
     use runaway_ownership::runaway_ownership::IRunawayOwnershipContract;
-use core::option::OptionTrait;
+    use core::option::OptionTrait;
     use core::traits::TryInto;
     use starknet::{
             ContractAddress, contract_address_const, get_block_number, get_caller_address,
@@ -37,21 +36,15 @@ use core::option::OptionTrait;
         };
     use starknet::class_hash::ClassHash;
     use core::num::traits::Zero;
-
-
     use runaway_ownership::interfaces::IRunawayContract::{IRunawayContractDispatcher,IRunawayContractDispatcherTrait};
     use runaway_ownership::interfaces::IRunAwayNFTFactory::{IRunAwayNFTFactoryDispatcher, IRunAwayNFTFactoryDispatcherTrait};
     use runaway_ownership::interfaces::IFactory::{IFactoryDispatcher, IFactoryDispatcherTrait};
     use runaway_ownership::interfaces::IERC721::{IERC721Dispatcher, IERC721DispatcherTrait};
     use runaway_ownership::interfaces::ISkinContract::{ISkinContractDispatcher, ISkinContractDispatcherTrait};
     use runaway_ownership::interfaces::IRunawayMarketplaceContract::{IRunawayMarketplaceContractDispatcher, IRunawayMarketplaceContractDispatcherTrait};
-
     use runaway_ownership::runaway_customs::{Runaway,Color,SkinType,Jacket,Kofia,Pants};
-
     const RUNAWAY_VALID_EXPERIENCE_FOR_OFFSPRING: u64 = 200;
-
     const ACCOUNT_CLASS_HASH: felt252 = 0x45d67b8590561c9b54e14dd309c9f38c4e2c554dd59414021f9d079811621bd;
-
     use openzeppelin::token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait, ERC20ABILibraryDispatcher};
     use openzeppelin::access::ownable::OwnableComponent;
  
@@ -141,7 +134,7 @@ use core::option::OptionTrait;
 
             let runaway =  runaway_dispatcher.get_runaway(runaway_id);
 
-            assert(runaway.tb_owner > recipient, 'CALLER IS NOT OWNER');
+            assert(runaway.tb_owner == recipient, 'CALLER IS NOT OWNER');
         }
         
     }
@@ -199,10 +192,10 @@ use core::option::OptionTrait;
                 contract_address: self.runaway_contract_address.read()
             };
 
-            let (_runaway_id, _runaway) = runaway_dispacher.create_runaway(recipient,token_id,account_address);
+            let (runaway_id, _runaway) = runaway_dispacher.create_runaway(recipient,token_id,account_address);
 
 
-            self.runaways_tba.write(token_id, account_address);
+            self.runaways_tba.write(runaway_id, account_address);
 
             let nft_token_dispacher = IERC721Dispatcher{
                 contract_address: deployed_address
@@ -233,7 +226,7 @@ use core::option::OptionTrait;
                 contract_address: self.runaway_factory_contract_adress.read()
             };
 
-            let new_runaway_token_recipient = self.runaways_tba.read(runaway.runaway_token_id);
+            let new_runaway_token_recipient = self.runaways_tba.read(runaway.runaway_id);
 
             let (deployed_address, token_id) = runaway_nft_token_dispacher.deploy_and_mint(new_runaway_token_recipient);
 
@@ -255,7 +248,7 @@ use core::option::OptionTrait;
 
             self.user_runaway_counts.write(new_runaway_token_recipient, total_runaways);
 
-            self.runaways_tba.write(token_id, new_runaway_token_recipient);
+            self.runaways_tba.write(new_runaway_id, new_runaway_token_recipient);
 
         }
 
@@ -356,7 +349,7 @@ use core::option::OptionTrait;
 
         }
 
-        fn add_kofia_skin_token_to_runaway_marketplace(ref self:ContractState,runaway_id: u256, kofia_id: u256, price: felt252){
+        fn add_kofia_skin_token_to_runaway_marketplace(ref self:ContractState,0x03a1eaab1487610f0eb463007fbb987b89613180f4f4eea301a67c5c1682c001){
 
             let caller = get_caller_address();
             
@@ -443,8 +436,8 @@ use core::option::OptionTrait;
 
         }
 
-        fn get_runaway_tba(self: @ContractState, token_id: u256) -> ContractAddress{
-            self.runaways_tba.read(token_id)
+        fn get_runaway_tba(self: @ContractState, runaway_id: u256) -> ContractAddress{
+            self.runaways_tba.read(runaway_id)
         }
         fn get_skin_tba(self: @ContractState, token_id: u256) -> ContractAddress{
             self.skin_tba.read(token_id)
@@ -492,7 +485,7 @@ use core::option::OptionTrait;
 
                 assert(has_paid, 'Payment Failed');
 
-                erc721_dispacher.transfer_from(buyer,runaway_tba,runaway.runaway_token_id);
+                erc721_dispacher.transfer_from(buyer,get_contract_address(),runaway.runaway_token_id);
 
                 let user_token = RunawayToken {
                     nft_contract: Zero::zero(),
@@ -551,6 +544,8 @@ use core::option::OptionTrait;
             self.user_tokens.write((account_address,runaway.runaway_token_id), user_token);
 
         }
+
+
 
 
     }

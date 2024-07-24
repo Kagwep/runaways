@@ -3,4 +3,4 @@ Class hash declared:
 
 
 Contract deployed:
-0x03d251df5cff8e6eafbc5a4232146a60f8a69a1840d53c3dee8cf14f8e41cba4
+0x032c99f0c4d04f16b7a18c3c0e8f97bea71a8ec42ec8876f6db9a9c94c8c951d

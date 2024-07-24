@@ -49,6 +49,8 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
 
     const [runaways , setRunaways] = useState<any>([])
     const [playingRunaway, setPlayingRunaway] = useState<number>(0);
+    const [isCopied, setIsCopied] = useState(false);
+
 
     const supabase = createClient(import.meta.env.VITE_SUPERBASE_URL,import.meta.env.VITE_SUPERBASE_ANON_KEY);
 
@@ -147,10 +149,7 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
       return `data:image/svg+xml;base64,${window.btoa(unescape(encodeURIComponent(svcontent )))}`;
     };
 
-    const get_runaway_tba = async() => {
-      let runaway_tba = await runaway_ownership_contract.get_runaway_tba(1);
-      console.log("The tba",convertToStarknetAddress(runaway_tba))
-    }
+
 
     const create_runaway = async () => {
      
@@ -159,9 +158,7 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
           console.log('done');
         
           const notify = () => toast(" You have Created A runaway !");
-          notify()
-
-          await get_user_runaways();
+          notify();
         }catch(error){
           console.log(error);
         }
@@ -186,12 +183,22 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
 
     }
 
+    const copyToClipboard = async (tba_account: any) => {
+      try {
+        await navigator.clipboard.writeText(tba_account);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000); // Reset copied state after 2 seconds
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+      }
+    };
+  
+
 
     useEffect(() => {
 
       const fetchRunaways = async () => {
         await get_user_runaways();
-        await get_runaway_tba();
       };
        
       if (connection){
@@ -210,7 +217,7 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
            (
               
               playingRunaway !=0 ? (
-                <Runaway runaway_id={playingRunaway} />
+                <p></p>
               ): (
 
                 <div className="bg-white">
@@ -246,13 +253,22 @@ export const RunAwaysManage: React.FC<PropTypes> = () => {
                         </div>
                       </Link>
 
-                        {runaway.metadata_updated ? (
+                        {/* {runaway.metadata_updated ? (
                           <p></p>
                         ):(
                           <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={() => approve_update_metadata(runaway.runaway_token_id,runaway.runaway_id,runaway.svg)}>
                             update 
                           </button>
-                        )}
+                        )} */}
+                            <div 
+                              className="flex items-center justify-between p-2 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200 transition-colors duration-200"
+                              onClick={() => copyToClipboard(convertToStarknetAddress(runaway.tb_owner))}
+                            >
+                              <span className="text-gray-700 font-mono">owner: <span className='text-green-400'>{limitChars(convertToStarknetAddress(runaway.tb_owner)!,8,true)}</span></span>
+                              <span className="ml-2 text-sm font-medium text-blue-600">
+                                {isCopied ? 'Copied!' : 'Click to copy'}
+                              </span>
+                            </div>
                       
                       </div>
                     ))}

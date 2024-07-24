@@ -27,10 +27,10 @@ const runawaySkinsAbi = runawaySkins;
 const runawayMarketPlaceAbi = runawayMarketplace;
 
 const ERC20CONTRACT_ADDRESS= "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
-const runawayContractAddress = "0x06056454c65b96099b9d7cfc6a58b1258d489009202feaab9a0d77a441cf2b9a"
-const runawayOwnershipContractAddress = "0x030157df9492d547cda55dd3e8ccf11dedd829f9a9ed6710e001d25431c4985a"
-const runawaySkinsContract = "0x0243c0908d2ea17c42fdc55a26487c215f67346745f43eac4525089395137128";
-const runawayMarketplaceContractAddress = "0x057cdab510319829b92265c8b0660aa2719539faba1bcf6e66e76384f687aa5d"
+const runawayContractAddress = "0x02ad897b88d26c7ae238031239cf57e5e4f28d3ec73b0b7f2da6322cc3bf2e5d"
+const runawayOwnershipContractAddress = "0x03a1eaab1487610f0eb463007fbb987b89613180f4f4eea301a67c5c1682c001"
+const runawaySkinsContract = "0x06b0d717340572cacb8a31b0eed2ad9d94f801b0e5a35522a6fcce204ea2f6da";
+const runawayMarketplaceContractAddress = "0x032c99f0c4d04f16b7a18c3c0e8f97bea71a8ec42ec8876f6db9a9c94c8c951d"
 // Pragma configs
 
 

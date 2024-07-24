@@ -40,8 +40,6 @@ const RunawaysMarketPlace = () => {
   
         console.log("runaways: ", runaways)
   
-
-
         const response = await fetch(svgUrl);
          const svg = await response.text();
   

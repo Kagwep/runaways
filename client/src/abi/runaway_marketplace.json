@@ -1,395 +1,541 @@
 [
-    {
-      "name": "RunawayMarketplaceContract",
-      "type": "impl",
-      "interface_name": "runaway_marketplace::runaway_marketplace::IRunawayMarketplaceContract"
-    },
-    {
-      "name": "core::integer::u256",
-      "type": "struct",
-      "members": [
-        {
-          "name": "low",
-          "type": "core::integer::u128"
-        },
-        {
-          "name": "high",
-          "type": "core::integer::u128"
-        }
-      ]
-    },
-    {
-      "name": "runaway_marketplace::runaway_customs::Color",
-      "type": "struct",
-      "members": [
-        {
-          "name": "r",
-          "type": "core::integer::u8"
-        },
-        {
-          "name": "g",
-          "type": "core::integer::u8"
-        },
-        {
-          "name": "b",
-          "type": "core::integer::u8"
-        }
-      ]
-    },
-    {
-      "name": "runaway_marketplace::runaway_customs::RunawayGenes",
-      "type": "struct",
-      "members": [
-        {
-          "name": "body_color",
-          "type": "runaway_marketplace::runaway_customs::Color"
-        },
-        {
-          "name": "eye_color",
-          "type": "runaway_marketplace::runaway_customs::Color"
-        },
-        {
-          "name": "mouth_color",
-          "type": "runaway_marketplace::runaway_customs::Color"
-        },
-        {
-          "name": "comb_color",
-          "type": "runaway_marketplace::runaway_customs::Color"
-        }
-      ]
-    },
-    {
-      "name": "runaway_marketplace::runaway_customs::Runaway",
-      "type": "struct",
-      "members": [
-        {
-          "name": "runaway_token_id",
-          "type": "core::integer::u256"
-        },
-        {
-          "name": "genes",
-          "type": "runaway_marketplace::runaway_customs::RunawayGenes"
-        },
-        {
-          "name": "created_at",
-          "type": "core::integer::u64"
-        },
-        {
-          "name": "experience",
-          "type": "core::integer::u64"
-        },
-        {
-          "name": "nr_children",
-          "type": "core::integer::u16"
-        }
-      ]
-    },
-    {
-      "name": "runaway_marketplace::runaway_customs::RunawayMarketplace",
-      "type": "struct",
-      "members": [
-        {
-          "name": "runaway",
-          "type": "runaway_marketplace::runaway_customs::Runaway"
-        },
-        {
-          "name": "price",
-          "type": "core::felt252"
-        },
-        {
-          "name": "nft_contract_address",
-          "type": "core::starknet::contract_address::ContractAddress"
-        }
-      ]
-    },
-    {
-      "name": "runaway_marketplace::runaway_customs::Kofia",
-      "type": "struct",
-      "members": [
-        {
-          "name": "color",
-          "type": "runaway_marketplace::runaway_customs::Color"
-        },
-        {
-          "name": "runaway_id",
-          "type": "core::integer::u256"
-        },
-        {
-          "name": "token_id",
-          "type": "core::integer::u256"
-        }
-      ]
-    },
-    {
-      "name": "runaway_marketplace::runaway_customs::KofiaMarketplace",
-      "type": "struct",
-      "members": [
-        {
-          "name": "kofia",
-          "type": "runaway_marketplace::runaway_customs::Kofia"
-        },
-        {
-          "name": "price",
-          "type": "core::felt252"
-        },
-        {
-          "name": "nft_contract_address",
-          "type": "core::starknet::contract_address::ContractAddress"
-        }
-      ]
-    },
-    {
-      "name": "runaway_marketplace::runaway_customs::Jacket",
-      "type": "struct",
-      "members": [
-        {
-          "name": "color",
-          "type": "runaway_marketplace::runaway_customs::Color"
-        },
-        {
-          "name": "runaway_id",
-          "type": "core::integer::u256"
-        },
-        {
-          "name": "token_id",
-          "type": "core::integer::u256"
-        }
-      ]
-    },
-    {
-      "name": "runaway_marketplace::runaway_customs::JacketMarketplace",
-      "type": "struct",
-      "members": [
-        {
-          "name": "jacket",
-          "type": "runaway_marketplace::runaway_customs::Jacket"
-        },
-        {
-          "name": "price",
-          "type": "core::felt252"
-        },
-        {
-          "name": "nft_contract_address",
-          "type": "core::starknet::contract_address::ContractAddress"
-        }
-      ]
-    },
-    {
-      "name": "runaway_marketplace::runaway_customs::Pants",
-      "type": "struct",
-      "members": [
-        {
-          "name": "color",
-          "type": "runaway_marketplace::runaway_customs::Color"
-        },
-        {
-          "name": "runaway_id",
-          "type": "core::integer::u256"
-        },
-        {
-          "name": "token_id",
-          "type": "core::integer::u256"
-        }
-      ]
-    },
-    {
-      "name": "runaway_marketplace::runaway_customs::PantsMarketplace",
-      "type": "struct",
-      "members": [
-        {
-          "name": "pants",
-          "type": "runaway_marketplace::runaway_customs::Pants"
-        },
-        {
-          "name": "price",
-          "type": "core::felt252"
-        },
-        {
-          "name": "nft_contract_address",
-          "type": "core::starknet::contract_address::ContractAddress"
-        }
-      ]
-    },
-    {
-      "name": "runaway_marketplace::runaway_marketplace::IRunawayMarketplaceContract",
-      "type": "interface",
-      "items": [
-        {
-          "name": "set_runaway_ownership_contract",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "runaway_ownership_contract",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ],
-          "outputs": [],
-          "state_mutability": "external"
-        },
-        {
-          "name": "set_runaway_contract",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "runaway_contract",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ],
-          "outputs": [],
-          "state_mutability": "external"
-        },
-        {
-          "name": "set_skins_contract",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "skins_contract",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ],
-          "outputs": [],
-          "state_mutability": "external"
-        },
-        {
-          "name": "add_runaway_token_to_marketplace",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "runaway_id",
-              "type": "core::integer::u256"
-            },
-            {
-              "name": "price",
-              "type": "core::felt252"
-            },
-            {
-              "name": "nft_contract",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ],
-          "outputs": [],
-          "state_mutability": "external"
-        },
-        {
-          "name": "add_kofia_skin_token_to_marketplace",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "kofia_id",
-              "type": "core::integer::u256"
-            },
-            {
-              "name": "price",
-              "type": "core::felt252"
-            },
-            {
-              "name": "nft_contract",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ],
-          "outputs": [],
-          "state_mutability": "external"
-        },
-        {
-          "name": "add_jacket_skin_token_to_marketplace",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "jacket_id",
-              "type": "core::integer::u256"
-            },
-            {
-              "name": "price",
-              "type": "core::felt252"
-            },
-            {
-              "name": "nft_contract",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ],
-          "outputs": [],
-          "state_mutability": "external"
-        },
-        {
-          "name": "add_pants_skin_token_to_marketplace",
-          "type": "function",
-          "inputs": [
-            {
-              "name": "pants_id",
-              "type": "core::integer::u256"
-            },
-            {
-              "name": "price",
-              "type": "core::felt252"
-            },
-            {
-              "name": "nft_contract",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ],
-          "outputs": [],
-          "state_mutability": "external"
-        },
-        {
-          "name": "get_all_runaways",
-          "type": "function",
-          "inputs": [],
-          "outputs": [
-            {
-              "type": "core::array::Array::<runaway_marketplace::runaway_customs::RunawayMarketplace>"
-            }
-          ],
-          "state_mutability": "view"
-        },
-        {
-          "name": "get_all_kofias",
-          "type": "function",
-          "inputs": [],
-          "outputs": [
-            {
-              "type": "core::array::Array::<runaway_marketplace::runaway_customs::KofiaMarketplace>"
-            }
-          ],
-          "state_mutability": "view"
-        },
-        {
-          "name": "get_all_jackets",
-          "type": "function",
-          "inputs": [],
-          "outputs": [
-            {
-              "type": "core::array::Array::<runaway_marketplace::runaway_customs::JacketMarketplace>"
-            }
-          ],
-          "state_mutability": "view"
-        },
-        {
-          "name": "get_all_pants",
-          "type": "function",
-          "inputs": [],
-          "outputs": [
-            {
-              "type": "core::array::Array::<runaway_marketplace::runaway_customs::PantsMarketplace>"
-            }
-          ],
-          "state_mutability": "view"
-        }
-      ]
-    },
-    {
-      "name": "constructor",
-      "type": "constructor",
-      "inputs": [
-        {
-          "name": "owner",
-          "type": "core::starknet::contract_address::ContractAddress"
-        }
-      ]
-    },
-    {
-      "kind": "enum",
-      "name": "runaway_marketplace::runaway_marketplace::RunawayMarketplaceContract::Event",
-      "type": "event",
-      "variants": []
-    }
-  ]
+  {
+    "name": "RunawayMarketplaceContract",
+    "type": "impl",
+    "interface_name": "runaway_marketplace::runaway_marketplace::IRunawayMarketplaceContract"
+  },
+  {
+    "name": "core::integer::u256",
+    "type": "struct",
+    "members": [
+      {
+        "name": "low",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "high",
+        "type": "core::integer::u128"
+      }
+    ]
+  },
+  {
+    "name": "runaway_marketplace::runaway_customs::Color",
+    "type": "struct",
+    "members": [
+      {
+        "name": "r",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "g",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "b",
+        "type": "core::integer::u8"
+      }
+    ]
+  },
+  {
+    "name": "runaway_marketplace::runaway_customs::RunawayGenes",
+    "type": "struct",
+    "members": [
+      {
+        "name": "body_color",
+        "type": "runaway_marketplace::runaway_customs::Color"
+      },
+      {
+        "name": "eye_color",
+        "type": "runaway_marketplace::runaway_customs::Color"
+      },
+      {
+        "name": "mouth_color",
+        "type": "runaway_marketplace::runaway_customs::Color"
+      },
+      {
+        "name": "comb_color",
+        "type": "runaway_marketplace::runaway_customs::Color"
+      }
+    ]
+  },
+  {
+    "name": "core::bool",
+    "type": "enum",
+    "variants": [
+      {
+        "name": "False",
+        "type": "()"
+      },
+      {
+        "name": "True",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "name": "runaway_marketplace::runaway_customs::Runaway",
+    "type": "struct",
+    "members": [
+      {
+        "name": "runaway_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "runaway_token_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "genes",
+        "type": "runaway_marketplace::runaway_customs::RunawayGenes"
+      },
+      {
+        "name": "created_at",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "experience",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "nr_children",
+        "type": "core::integer::u16"
+      },
+      {
+        "name": "tb_owner",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "user",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "metadata_updated",
+        "type": "core::bool"
+      }
+    ]
+  },
+  {
+    "name": "runaway_marketplace::runaway_customs::RunawayMarketplace",
+    "type": "struct",
+    "members": [
+      {
+        "name": "runaway_marketplace_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "runaway",
+        "type": "runaway_marketplace::runaway_customs::Runaway"
+      },
+      {
+        "name": "price",
+        "type": "core::felt252"
+      },
+      {
+        "name": "nft_contract_address",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ]
+  },
+  {
+    "name": "runaway_marketplace::runaway_customs::Kofia",
+    "type": "struct",
+    "members": [
+      {
+        "name": "color",
+        "type": "runaway_marketplace::runaway_customs::Color"
+      },
+      {
+        "name": "runaway_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "token_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "tba_owner",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "user",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "metadata_updated",
+        "type": "core::bool"
+      }
+    ]
+  },
+  {
+    "name": "runaway_marketplace::runaway_customs::KofiaMarketplace",
+    "type": "struct",
+    "members": [
+      {
+        "name": "kofia_marketplace_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "kofia",
+        "type": "runaway_marketplace::runaway_customs::Kofia"
+      },
+      {
+        "name": "price",
+        "type": "core::felt252"
+      },
+      {
+        "name": "nft_contract_address",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ]
+  },
+  {
+    "name": "runaway_marketplace::runaway_customs::Jacket",
+    "type": "struct",
+    "members": [
+      {
+        "name": "color",
+        "type": "runaway_marketplace::runaway_customs::Color"
+      },
+      {
+        "name": "runaway_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "token_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "tba_owner",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "user",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "metadata_updated",
+        "type": "core::bool"
+      }
+    ]
+  },
+  {
+    "name": "runaway_marketplace::runaway_customs::JacketMarketplace",
+    "type": "struct",
+    "members": [
+      {
+        "name": "jacket_marketplace_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "jacket",
+        "type": "runaway_marketplace::runaway_customs::Jacket"
+      },
+      {
+        "name": "price",
+        "type": "core::felt252"
+      },
+      {
+        "name": "nft_contract_address",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ]
+  },
+  {
+    "name": "runaway_marketplace::runaway_customs::Pants",
+    "type": "struct",
+    "members": [
+      {
+        "name": "color",
+        "type": "runaway_marketplace::runaway_customs::Color"
+      },
+      {
+        "name": "runaway_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "token_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "tba_owner",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "user",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "metadata_updated",
+        "type": "core::bool"
+      }
+    ]
+  },
+  {
+    "name": "runaway_marketplace::runaway_customs::PantsMarketplace",
+    "type": "struct",
+    "members": [
+      {
+        "name": "pants_marketplace_id",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "pants",
+        "type": "runaway_marketplace::runaway_customs::Pants"
+      },
+      {
+        "name": "price",
+        "type": "core::felt252"
+      },
+      {
+        "name": "nft_contract_address",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ]
+  },
+  {
+    "name": "runaway_marketplace::runaway_marketplace::IRunawayMarketplaceContract",
+    "type": "interface",
+    "items": [
+      {
+        "name": "set_runaway_ownership_contract",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "runaway_ownership_contract",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "set_runaway_contract",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "runaway_contract",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "set_skins_contract",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "skins_contract",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "add_runaway_token_to_marketplace",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "runaway_id",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "price",
+            "type": "core::felt252"
+          },
+          {
+            "name": "nft_contract",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "add_kofia_skin_token_to_marketplace",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "kofia_id",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "price",
+            "type": "core::felt252"
+          },
+          {
+            "name": "nft_contract",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "add_jacket_skin_token_to_marketplace",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "jacket_id",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "price",
+            "type": "core::felt252"
+          },
+          {
+            "name": "nft_contract",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "add_pants_skin_token_to_marketplace",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "pants_id",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "price",
+            "type": "core::felt252"
+          },
+          {
+            "name": "nft_contract",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "get_all_runaways",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::array::Array::<runaway_marketplace::runaway_customs::RunawayMarketplace>"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "get_all_kofias",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::array::Array::<runaway_marketplace::runaway_customs::KofiaMarketplace>"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "get_all_jackets",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::array::Array::<runaway_marketplace::runaway_customs::JacketMarketplace>"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "get_all_pants",
+        "type": "function",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::array::Array::<runaway_marketplace::runaway_customs::PantsMarketplace>"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "get_kofia",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "kofia_marketplace_id",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "runaway_marketplace::runaway_customs::KofiaMarketplace"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "get_jackets",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "jacket_marketplace_id",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "runaway_marketplace::runaway_customs::JacketMarketplace"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "get_runaways",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "runaway_marketplace_id",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "runaway_marketplace::runaway_customs::RunawayMarketplace"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "get_pants",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "pants_marketplace_id",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "runaway_marketplace::runaway_customs::PantsMarketplace"
+          }
+        ],
+        "state_mutability": "view"
+      }
+    ]
+  },
+  {
+    "name": "constructor",
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ]
+  },
+  {
+    "kind": "enum",
+    "name": "runaway_marketplace::runaway_marketplace::RunawayMarketplaceContract::Event",
+    "type": "event",
+    "variants": []
+  }
+]

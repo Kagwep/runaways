@@ -68,12 +68,23 @@ type KeyStatus = {
 
 enum State { START = 0, GAME = 1, LOSE = 2, CUTSCENE = 3 }
 
+interface Outfit {
+  "pants-two": string;
+  "pants-one": string;
+  "jacket-arm-right": string;
+  "jacket-arm-left": string;
+  "jacket": string;
+  "hat": string;
+  "comb": string;
+}
+
 interface RunawayProps {
   runaway_id: number;  // ensure that runaway_id is expected to be a number
+  outfit: Outfit
 }
 
 
-export const Runaway: React.FC<RunawayProps> = ({runaway_id}) => {
+export const Runaway: React.FC<RunawayProps> = ({runaway_id,outfit}) => {
   // get the room id from url
    console.log("Runaway id",runaway_id)
 
@@ -166,8 +177,34 @@ export const Runaway: React.FC<RunawayProps> = ({runaway_id}) => {
     }
     
     // Usage without callback
-    const container = await loadAsset('models/', 'player.glb');
+    const container = await loadAsset('models/', 'player_one.glb');
     const [mesheRoot] = container.meshes;
+    console.log(container.meshes)
+    // Function to find a mesh by name
+    function findMeshByName(name: any) {
+      return mesheRoot.getChildMeshes().find(mesh => mesh.name === name);
+    }
+
+    // Function to change mesh color
+    function changeMeshColor(meshName: string, color: string) {
+      const mesh = findMeshByName(meshName);
+      if (mesh) {
+          const material = new StandardMaterial(meshName + "Material", scene);
+          material.diffuseColor = Color3.FromHexString(color);
+          mesh.material = material;
+      } else {
+          console.warn(`Mesh ${meshName} not found`);
+      }
+    }
+    console.log(outfit)
+
+    Object.entries(outfit).forEach(([meshName, color]) => {
+      console.log(meshName,color)
+      if (color !== "") {
+          changeMeshColor(meshName, color);
+      }
+     });
+
     mesheRoot.receiveShadows = true;
     const lightDirection = new Vector3(0, -1, 0);
     const light = new DirectionalLight('DirectionalLight', lightDirection, scene);

@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { close, valorantlogo, menu, riotlogo } from "../../assets";
+import { close, valorantlogo, menu, riotlogo ,genlogo} from "../../assets";
 import { navLinks } from "../../constants";
 import styles from "../../style";
 import { Link } from "react-router-dom";
@@ -30,9 +30,9 @@ const Navbar = () => {
             <Link to="/">
               <div className={`${styles.flexCenter} h-[80px] sm:ml-4 ml-10`}>
                 <img
-                  src={valorantlogo}
+                  src={genlogo}
                   alt="valorant"
-                  className="relative w-[38px] h-[26px]"
+                  className="relative w-[38px] h-[38px]"
                 />
               </div>
             </Link>

@@ -218,7 +218,7 @@
         "type": "function",
         "inputs": [
           {
-            "name": "token_id",
+            "name": "runaway_id",
             "type": "core::integer::u256"
           }
         ],

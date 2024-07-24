@@ -9,6 +9,7 @@ import instagram from "./instagram.svg";
 import linkedin from "./linkedin.svg";
 import twitter from "./twitter.svg";
 import overviewimg from "./overview.jpg";
+import genlogo from "./runaway2.png"
 
 export {
   valorantlogo,
@@ -22,4 +23,5 @@ export {
   linkedin,
   twitter,
   overviewimg,
+  genlogo
 };

@@ -89,3 +89,17 @@ npm install
 npm run dev
 
 ```
+
+# Future Works
+
+1. **Complete Auction System**  
+   Implement a fully functional auction system, allowing players to bid on exclusive runaways and experiences.
+
+2. **Argent Sessions for Smoother Game Play**  
+   Integrate Argent sessions to enhance the overall gaming experience, providing a seamless and non interuptive environment for players.
+
+3. **Custom Runaways and Skins from Artists**  
+   Collaborate with talented artists to introduce unique, custom-designed Runaways and skins, offering players a wider range of personalization options.
+
+4. **Multiplayer Mode**  
+   Develop a multiplayer mode, enabling players to interact, compete, and cooperate with each other in real-time, taking the Runaways experience to the next level.

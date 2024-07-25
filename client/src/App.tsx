@@ -3,9 +3,6 @@ import Home from "./components/pages/home/Home";
 import CTA from "./components/layout/CTA";
 import Footer from "./components/layout/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Agents from "./components/pages/Agents";
-import Agent from "./components/pages/Agent";
-import Maps from "./components/pages/Maps";
 import { useState,useEffect } from "react";
 import { useAppContext } from "./providers/AppProvider";
 import { Status } from "./helpers/status";
@@ -117,13 +114,6 @@ const App = () => {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route  path="/agents" element={<Agents />} />
-          <Route path="/maps" element={<Maps />} />
-          <Route
-  
-            path="/agent/:agentName"
-            element={<Agent/>}
-          />
           <Route path="/marketplace" element={<MarketplacePage />} />
           <Route path="/runaways" element={<RunAwaysManage />} />
           <Route path="/runaway/:id" element={<RunawayInfo />} />

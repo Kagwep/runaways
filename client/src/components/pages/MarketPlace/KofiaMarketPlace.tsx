@@ -117,7 +117,7 @@ const KofiaMarketPlace = () => {
                             <p className="text-sm font-medium text-gray-900">{runaway.price}</p> */}
                       <p className="text-sm font-medium text-gray-900 py-2"><span className='text-slate-500'>{feltToString(kofia.price)}</span> ETH</p>
 
-                        <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={() => buy_runaway()}>
+                        <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" >
                                     Buy
                         </button>
 
